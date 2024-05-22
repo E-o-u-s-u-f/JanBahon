@@ -18,9 +18,9 @@ class _BottomBarState extends State<BottomBar> {
             gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 colors: [
-                  Colors.orange.shade900,
-                  Colors.orange.shade800,
-                  Colors.orange.shade400
+                  Colors.blue.shade900,
+                  Colors.blue.shade800,
+                  Colors.blue.shade400
                 ]
             )
         ),
@@ -47,7 +47,7 @@ class _BottomBarState extends State<BottomBar> {
                     borderRadius: BorderRadius.only(topLeft: Radius.circular(60), topRight: Radius.circular(60))
                 ),
                 child: Padding(
-                  padding: EdgeInsets.all(30),
+                  padding: EdgeInsets.all(20),
                   child: Column(
                     children: <Widget>[
                       SizedBox(height: 60,),
@@ -102,7 +102,7 @@ class _BottomBarState extends State<BottomBar> {
                         // margin: EdgeInsets.symmetric(horizontal: 50),
                         color: Colors.orange[900],
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50),
+                          borderRadius: BorderRadius.circular(40),
 
                         ),
                         // decoration: BoxDecoration(
@@ -117,14 +117,15 @@ class _BottomBarState extends State<BottomBar> {
                       Row(
                         children: <Widget>[
                           Expanded(
-                            child: FadeInUp(duration: Duration(milliseconds: 1800), child: MaterialButton(
-                              onPressed: (){},
-                              height: 50,
-                              color: Colors.blue,
-                              shape: RoundedRectangleBorder(
+                            child: FadeInUp(duration: Duration(milliseconds: 1800),
+                                child: MaterialButton(
+                                onPressed: (){},
+                                height: 50,
+                                color: Colors.blue,
+                                shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50),
-                              ),
-                              child: Center(
+                                ),
+                                 child: Center(
                                 child: Text("Facebook", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
                               ),
                             )),
@@ -140,7 +141,7 @@ class _BottomBarState extends State<BottomBar> {
                               ),
                               color: Colors.black,
                               child: Center(
-                                child: Text("Github", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                                child: Text("Gmail", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
                               ),
                             )),
                           )
