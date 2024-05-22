@@ -22,7 +22,7 @@ class _BottomBarState extends State<BottomBar> {
                   Colors.orange.shade800,
                   Colors.orange.shade400
                 ]
-            )
+)
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
