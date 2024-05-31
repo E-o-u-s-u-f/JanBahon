@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "34833464571",
+    "project_id": "janbahon-4e06f",
+    "storage_bucket": "janbahon-4e06f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:34833464571:android:3ccedff3800a534cc0445e",
+        "android_client_info": {
+          "package_name": "com.example.jan_bahon"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5wYpHnwOIg0JPE23aUhrdAnZmj8tORnM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
