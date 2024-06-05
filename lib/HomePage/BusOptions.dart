@@ -19,8 +19,8 @@ class _BusOptionState extends State<BusOption> {
            child: Container(
              padding: EdgeInsets.all(16.0),
              child: Column(
-               mainAxisAlignment: MainAxisAlignment.start,
-               crossAxisAlignment: CrossAxisAlignment.center,
+               //mainAxisAlignment: MainAxisAlignment.start,
+               //crossAxisAlignment: CrossAxisAlignment.center,
                children: <Widget>[
                  buildBox("DHA","Dhaka","CHA","Chittagong","23-05-2024","02:35 am","BU1234"),
                  buildBox("RAN","Rangpur","RAJ","Rajshahi","23-05-2024","04:35 am","UB1234"),

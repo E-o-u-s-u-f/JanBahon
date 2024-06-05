@@ -1,5 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:jan_bahon/HomePage/homeScreen.dart';
+import 'package:jan_bahon/Screens/reg_in.dart';
 
 class BottomBar extends StatefulWidget {
   const BottomBar({super.key});
@@ -97,7 +99,9 @@ class _BottomBarState extends State<BottomBar> {
                       FadeInUp(duration: Duration(milliseconds: 1500), child: Text("Forgot Password?", style: TextStyle(color: Colors.grey),)),
                       SizedBox(height: 40,),
                       FadeInUp(duration: Duration(milliseconds: 1600), child: MaterialButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => homeS()));
+                        },
                         height: 50,
                         // margin: EdgeInsets.symmetric(horizontal: 50),
                         color: Colors.orange[900],
@@ -110,9 +114,28 @@ class _BottomBarState extends State<BottomBar> {
                         child: Center(
                           child: Text("Login", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
                         ),
-                      )),
-                      SizedBox(height: 50,),
-                      FadeInUp(duration: Duration(milliseconds: 1700), child: Text("Continue with social media", style: TextStyle(color: Colors.grey),)),
+                      )
+                      ),
+                      SizedBox(height: 40,),
+                      FadeInUp(duration: Duration(milliseconds: 1700), child: Text("Don't have any account", style: TextStyle(color: Colors.black),)),
+                      SizedBox(height: 10,),
+                      FadeInUp(duration: Duration(milliseconds: 1600), child: MaterialButton(
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => regScreen()));
+                        },
+                        height: 50,
+                        // margin: EdgeInsets.symmetric(horizontal: 50),
+                        color: Colors.blueGrey[900],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(40),
+
+                        ),
+
+                        child: Center(
+                          child: Text("Sign Up", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 20),),
+                        ),
+                      )
+                      ),
                       SizedBox(height: 30,),
                       Row(
                         children: <Widget>[

@@ -1,11 +1,49 @@
-    import 'dart:ui';
+import 'dart:ui';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 
-class regScreen extends StatelessWidget {
-  const regScreen({super.key});
+class regScreen extends StatefulWidget {
+
+  @override
+  _regScreenState createState() => _regScreenState();
+}
+
+/* var email;
+  var password;
+
+register()async{
+  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  final FirebaseUser user = await firebaseAuth.createUserWithEmailAndPassword(email: null, password: null)
+
+}*/
+//const regScreen({super.key});
+class _regScreenState extends State<regScreen> {
+  final TextEditingController _fullNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<void> _signUp() async {
+    try {
+      if (_passwordController.text == _confirmPasswordController.text) {
+        UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
+        // Optionally update user display name
+        await userCredential.user!.updateDisplayName(_fullNameController.text);
+        print("User signed up: ${userCredential.user}");
+      } else {
+        print("Passwords do not match");
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +57,8 @@ class regScreen extends StatelessWidget {
                   gradient: LinearGradient(colors: [
                     Color(0xFF000080),
                     Color(0xFF87CEEB),
-                  ])
+                    ]
+                  )
               ),
               child: const Padding(
                 padding: EdgeInsets.only(top: 60.0,left: 22),
@@ -49,17 +88,21 @@ class regScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const SizedBox(height: 30.0,),
-                      const TextField(
+                       TextField(
+                       controller: _fullNameController,
                         decoration: InputDecoration(
                             suffixIcon: Icon(Icons.check,color: Colors.grey,),
                             label: Text('Full Name',style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color:Color(0xFF000080),
-                            ),)
+                            ),
+                            )
                         ),
+
                       ),
 
-                      const TextField(
+                       TextField(
+                         controller: _emailController,
                         decoration: InputDecoration(
                             suffixIcon: Icon(Icons.check,color: Colors.grey,),
                             label: Text('Phone or Gmail',style: TextStyle(
@@ -68,7 +111,8 @@ class regScreen extends StatelessWidget {
                             ),)
                         ),
                       ),
-                      const TextField(
+                       TextField(
+                        controller: _passwordController,
                         decoration: InputDecoration(
                             suffixIcon: Icon(Icons.visibility_off,color: Colors.grey,),
                             label: Text('Password',style: TextStyle(
@@ -77,7 +121,8 @@ class regScreen extends StatelessWidget {
                             ),)
                         ),
                       ),
-                      const TextField(
+                       TextField(
+                         controller: _confirmPasswordController,
                         decoration: InputDecoration(
                             suffixIcon: Icon(Icons.visibility_off,color: Colors.grey,),
                             label: Text('Confirm Password',style: TextStyle(
@@ -88,26 +133,30 @@ class regScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 10,),
                       const SizedBox(height: 70.0,),
-                      Container(
-                        height: 55,
-                        width: 300,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30.0),
-                          gradient: const LinearGradient(
-                              colors:[
-                                Color(0xFF000080),
-                                Color(0xFF87CEEB),
-                              ]
+                      GestureDetector(
+                        onTap: _signUp,
+                        child: Container(
+                          height: 55,
+                          width: 300,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30.0),
+                            gradient: const LinearGradient(
+                                colors:[
+                                  Color(0xFF000080),
+                                  Color(0xFF87CEEB),
+                                ]
+                            ),
                           ),
+                          child: const Center(child: Text('SIGN UP',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: Colors.white,
+                            ),
+                          ),),
                         ),
-                        child: const Center(child: Text('SIGN UP',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Colors.white,
-                          ),
-                        ),),
                       ),
+
                       const SizedBox(height: 80,),
                       const Align(
                         alignment: Alignment.bottomRight,
@@ -118,12 +167,14 @@ class regScreen extends StatelessWidget {
                             Text("Already have an account",style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.grey,
-                            ),),
+                            ),
+                            ),
                             Text("Sign in",style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 17,
                               color: Colors.black,
-                            ),),
+                            ),
+                            ),
                           ],
                         ),
                       ),
