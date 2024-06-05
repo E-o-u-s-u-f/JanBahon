@@ -1,11 +1,16 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:jan_bahon/HomePage/homeScreen.dart';
+import 'package:jan_bahon/firebase_options.dart';
+import 'Screens/reg_in.dart';
 import 'Screens/log_in.dart';
 import 'package:animate_do/animate_do.dart';
-import 'Screens/reg_in.dart';
+import 'HomePage/BusOptions.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -22,7 +27,9 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const homeS(),
+      home:  homeS(),
     );
   }
 }
+
+

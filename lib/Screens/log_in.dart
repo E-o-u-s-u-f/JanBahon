@@ -1,5 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:jan_bahon/HomePage/homeScreen.dart';
+import 'package:jan_bahon/Screens/reg_in.dart';
 
 class BottomBar extends StatefulWidget {
   const BottomBar({super.key});
@@ -18,9 +20,9 @@ class _BottomBarState extends State<BottomBar> {
             gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 colors: [
-                  Colors.orange.shade900,
-                  Colors.orange.shade800,
-                  Colors.orange.shade400
+                  Colors.blue.shade900,
+                  Colors.blue.shade800,
+                  Colors.blue.shade400
                 ]
 )
         ),
@@ -47,7 +49,7 @@ class _BottomBarState extends State<BottomBar> {
                     borderRadius: BorderRadius.only(topLeft: Radius.circular(60), topRight: Radius.circular(60))
                 ),
                 child: Padding(
-                  padding: EdgeInsets.all(30),
+                  padding: EdgeInsets.all(20),
                   child: Column(
                     children: <Widget>[
                       SizedBox(height: 60,),
@@ -97,12 +99,14 @@ class _BottomBarState extends State<BottomBar> {
                       FadeInUp(duration: Duration(milliseconds: 1500), child: Text("Forgot Password?", style: TextStyle(color: Colors.grey),)),
                       SizedBox(height: 40,),
                       FadeInUp(duration: Duration(milliseconds: 1600), child: MaterialButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => homeS()));
+                        },
                         height: 50,
                         // margin: EdgeInsets.symmetric(horizontal: 50),
                         color: Colors.orange[900],
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50),
+                          borderRadius: BorderRadius.circular(40),
 
                         ),
                         // decoration: BoxDecoration(
@@ -110,21 +114,41 @@ class _BottomBarState extends State<BottomBar> {
                         child: Center(
                           child: Text("Login", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
                         ),
-                      )),
-                      SizedBox(height: 50,),
-                      FadeInUp(duration: Duration(milliseconds: 1700), child: Text("Continue with social media", style: TextStyle(color: Colors.grey),)),
+                      )
+                      ),
+                      SizedBox(height: 40,),
+                      FadeInUp(duration: Duration(milliseconds: 1700), child: Text("Don't have any account", style: TextStyle(color: Colors.black),)),
+                      SizedBox(height: 10,),
+                      FadeInUp(duration: Duration(milliseconds: 1600), child: MaterialButton(
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => regScreen()));
+                        },
+                        height: 50,
+                        // margin: EdgeInsets.symmetric(horizontal: 50),
+                        color: Colors.blueGrey[900],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(40),
+
+                        ),
+
+                        child: Center(
+                          child: Text("Sign Up", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 20),),
+                        ),
+                      )
+                      ),
                       SizedBox(height: 30,),
                       Row(
                         children: <Widget>[
                           Expanded(
-                            child: FadeInUp(duration: Duration(milliseconds: 1800), child: MaterialButton(
-                              onPressed: (){},
-                              height: 50,
-                              color: Colors.blue,
-                              shape: RoundedRectangleBorder(
+                            child: FadeInUp(duration: Duration(milliseconds: 1800),
+                                child: MaterialButton(
+                                onPressed: (){},
+                                height: 50,
+                                color: Colors.blue,
+                                shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50),
-                              ),
-                              child: Center(
+                                ),
+                                 child: Center(
                                 child: Text("Facebook", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
                               ),
                             )),
@@ -140,7 +164,7 @@ class _BottomBarState extends State<BottomBar> {
                               ),
                               color: Colors.black,
                               child: Center(
-                                child: Text("Github", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                                child: Text("Gmail", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
                               ),
                             )),
                           )
