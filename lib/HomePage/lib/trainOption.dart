@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'bus_seat_selection.dart';
+import '../../Seat&BuyTicket/bus_seat_selection.dart';
 
-Widget buildBoxB(BuildContext context, String FROM, String FROM1, String TO, String TO1, String date, String time, String no) {
+Widget buildBoxTrain(BuildContext context, String FROM, String FROM1, String TO, String TO1, String date, String time, String no) {
   return InkWell(
     onTap: () {
       // Handle tap event here
@@ -47,7 +47,7 @@ Widget buildBoxB(BuildContext context, String FROM, String FROM1, String TO, Str
                 ),
               ),
               Icon(
-                Icons.airport_shuttle,
+                Icons.train,
                 size: 32,
               ),
               Expanded(
@@ -85,7 +85,7 @@ Widget buildBoxB(BuildContext context, String FROM, String FROM1, String TO, Str
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text('Bus', style: TextStyle(color: Colors.grey)),
+                    Text('Train', style: TextStyle(color: Colors.grey)),
                     Text(no),
                   ],
                 ),

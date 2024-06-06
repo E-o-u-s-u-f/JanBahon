@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 
+import '../HomePage/homeScreen.dart';
+import 'log_in.dart';
+
 class regScreen extends StatefulWidget {
 
   @override
@@ -134,7 +137,11 @@ class _regScreenState extends State<regScreen> {
                       const SizedBox(height: 10,),
                       const SizedBox(height: 70.0,),
                       GestureDetector(
-                        onTap: _signUp,
+                        onTap: (){
+                          _signUp();
+                          Navigator.push(context,
+                          MaterialPageRoute(builder: (context)=> const homeS()));
+                        },
                         child: Container(
                           height: 55,
                           width: 300,
