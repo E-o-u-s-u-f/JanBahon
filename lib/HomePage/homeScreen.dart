@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:jan_bahon/Seat&BuyTicket/bus_seat_selection.dart';
+import 'package:jan_bahon/HomePage/bus_seat_selection.dart';
+import '../Screens/log_in.dart';
 import 'lib/Screens/log_in.dart';
 import 'lib/Seat&BuyTicket/bus_seat_selection.dart';
 
@@ -224,7 +225,7 @@ class _State extends State<homeS> {
               child: ListTile(
                 title: Text('Log out'),
                 onTap: (){
-                 // Navigator.push(context, MaterialPageRoute(builder: (context) => BottomAppBar()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => BottomBar()));
                 },
               ),
             ),

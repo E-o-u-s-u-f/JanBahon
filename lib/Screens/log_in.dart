@@ -1,4 +1,7 @@
+
+// log_in.dart
 import 'package:animate_do/animate_do.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jan_bahon/HomePage/homeScreen.dart';
 import 'package:jan_bahon/Screens/reg_in.dart';
@@ -11,6 +14,49 @@ class BottomBar extends StatefulWidget {
 }
 
 class _BottomBarState extends State<BottomBar> {
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
+
+  Future<void> _login() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+      // Navigate to home screen after successful login
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => homeS()));
+    } on FirebaseAuthException catch (e) {
+      // Handle error
+      String message;
+      if (e.code == 'user-not-found') {
+        message = 'No user found for that email.';
+      } else if (e.code == 'wrong-password') {
+        message = 'Wrong password provided.';
+      } else {
+        message = 'An unknown error occurred.';
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    }
+    catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('An unknown error occurred.')),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +70,7 @@ class _BottomBarState extends State<BottomBar> {
                   Colors.blue.shade800,
                   Colors.blue.shade400
                 ]
-)
+            )
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,6 +117,7 @@ class _BottomBarState extends State<BottomBar> {
                                   border: Border(bottom: BorderSide(color: Colors.grey.shade200))
                               ),
                               child: TextField(
+                                controller: _emailController,
                                 decoration: InputDecoration(
                                     hintText: "Email or Phone number",
                                     hintStyle: TextStyle(color: Colors.grey),
@@ -84,6 +131,7 @@ class _BottomBarState extends State<BottomBar> {
                                   border: Border(bottom: BorderSide(color: Colors.grey.shade200))
                               ),
                               child: TextField(
+                                controller: _passwordController,
                                 obscureText: true,
                                 decoration: InputDecoration(
                                     hintText: "Password",
@@ -100,22 +148,19 @@ class _BottomBarState extends State<BottomBar> {
                       SizedBox(height: 40,),
                       FadeInUp(duration: Duration(milliseconds: 1600), child: MaterialButton(
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => homeS()));
+                          _login();
                         },
                         height: 50,
-                        // margin: EdgeInsets.symmetric(horizontal: 50),
                         color: Colors.orange[900],
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(40),
-
                         ),
-                        // decoration: BoxDecoration(
-                        // ),
                         child: Center(
-                          child: Text("Login", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                          child: _isLoading
+                              ? CircularProgressIndicator(color: Colors.white)
+                              : Text("Login", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                         ),
-                      )
-                      ),
+                      )),
                       SizedBox(height: 40,),
                       FadeInUp(duration: Duration(milliseconds: 1700), child: Text("Don't have any account", style: TextStyle(color: Colors.black),)),
                       SizedBox(height: 10,),
@@ -124,32 +169,27 @@ class _BottomBarState extends State<BottomBar> {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => regScreen()));
                         },
                         height: 50,
-                        // margin: EdgeInsets.symmetric(horizontal: 50),
                         color: Colors.blueGrey[900],
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(40),
-
                         ),
-
                         child: Center(
-                          child: Text("Sign Up", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 20),),
+                          child: Text("Sign Up", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 20)),
                         ),
-                      )
-                      ),
+                      )),
                       SizedBox(height: 30,),
                       Row(
                         children: <Widget>[
                           Expanded(
-                            child: FadeInUp(duration: Duration(milliseconds: 1800),
-                                child: MaterialButton(
-                                onPressed: (){},
-                                height: 50,
-                                color: Colors.blue,
-                                shape: RoundedRectangleBorder(
+                            child: FadeInUp(duration: Duration(milliseconds: 1800), child: MaterialButton(
+                              onPressed: (){},
+                              height: 50,
+                              color: Colors.blue,
+                              shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50),
-                                ),
-                                 child: Center(
-                                child: Text("Facebook", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                              ),
+                              child: Center(
+                                child: Text("Facebook", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                               ),
                             )),
                           ),
@@ -160,11 +200,10 @@ class _BottomBarState extends State<BottomBar> {
                               height: 50,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50),
-
                               ),
                               color: Colors.black,
                               child: Center(
-                                child: Text("Gmail", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                                child: Text("Gmail", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                               ),
                             )),
                           )
