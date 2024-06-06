@@ -1,48 +1,17 @@
-import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 
-class BusOption extends StatefulWidget {
+import 'bus_seat_selection.dart';
 
-  const BusOption({Key? key}) : super(key: key);
-
-  @override
-  State<BusOption> createState() => _BusOptionState();
-}
-
-class _BusOptionState extends State<BusOption> {
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-         child: SingleChildScrollView(
-           child: Container(
-             padding: EdgeInsets.all(16.0),
-             child: Column(
-               //mainAxisAlignment: MainAxisAlignment.start,
-               //crossAxisAlignment: CrossAxisAlignment.center,
-               children: <Widget>[
-                 buildBox("DHA","Dhaka","CHA","Chittagong","23-05-2024","02:35 am","BU1234"),
-                 buildBox("RAN","Rangpur","RAJ","Rajshahi","23-05-2024","04:35 am","UB1234"),
-                 buildBox("SYL","Sylhet","KHU","Khulna","23-05-2024","06:35 am","UL1234"),
-                 buildBox("BAR","Barisal","MYM","Mymensingh","23-05-2024","09:35","KL0564"),
-                 buildBox("FAR","Faridpur","MUN","Munshiganj","24-05-2024","12:00 am","NI4207"),
-                 buildBox("RAJ","Rajshahi","DHA","Dhaka","24-05-2024","02:35 am","JO2454"),
-                 buildBox("KHU","Khulna","BAR","Barisal","24-05-2024","01:35 am","ro3024"),
-
-
-
-               ],
-             ),
-           ),
-         ),
-
-      ),
-
-    );
-  }
-  Widget buildBox(String FROM,String FROM1,String TO,String TO1,String date,String time,String no) {
-    return Container(
+Widget buildBoxB(BuildContext context, String FROM, String FROM1, String TO, String TO1, String date, String time, String no) {
+  return InkWell(
+    onTap: () {
+      // Handle tap event here
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => BusSeatSelection()),
+      );
+    },
+    child: Container(
       margin: EdgeInsets.all(16.0),
       padding: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
@@ -134,6 +103,7 @@ class _BusOptionState extends State<BusOption> {
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
 }
+

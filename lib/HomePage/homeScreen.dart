@@ -3,7 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+
+import 'package:jan_bahon/HomePage/bus_seat_selection.dart';
+import '../Screens/log_in.dart';
+
+import 'package:jan_bahon/HomePage/lib/trainOption.dart';
 import 'package:jan_bahon/Seat&BuyTicket/bus_seat_selection.dart';
+import 'BusOptions.dart';
+
+import 'filter.dart';
 import 'lib/Screens/log_in.dart';
 import 'lib/Seat&BuyTicket/bus_seat_selection.dart';
 
@@ -18,12 +26,17 @@ class _State extends State<homeS> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController _controller=TextEditingController(text: 'Filter');
 
+
   Color  textB1=Colors.cyan;
   Color textB2=Colors.pinkAccent;
   Color  textB3=Colors.orangeAccent;
   Color containerCol=Colors.cyan;
   Color containerCol2=Colors.pinkAccent;
   Color containerCol3=Colors.orangeAccent;
+  int _selectedIndex=0;
+  int selInd=0;
+  String _imageUrl = 'https://images.unsplash.com/photo-1570125909517-53cb21c89ff2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
+
 
   void changeColor(){
     setState(() {
@@ -36,8 +49,166 @@ class _State extends State<homeS> {
       }
     });
   }
+  static List<Widget> _widgetOptions = <Widget>[
+    homeS(),
+    //MapS(),
+   // QrCode(),
+  ];
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+  void _onIconTapped(int index) {
+    setState(() {
+      selInd = index;
+      switch (index) {
+        case 0:
+          _imageUrl = 'https://images.unsplash.com/photo-1570125909517-53cb21c89ff2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
+          break;
+        case 1:
+          _imageUrl = 'https://images.unsplash.com/photo-1644770633699-5129770e0404?q=80&w=2008&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
+          break;
+        case 2:
+          _imageUrl = 'https://images.unsplash.com/photo-1716918269977-a35b2c51f08e?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
+          break;
+        default:
+          _imageUrl = 'https://images.unsplash.com/photo-1570125909517-53cb21c89ff2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
+      }
+
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    Widget shuttleContent = SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          children: <Widget>[
+            Image(
+              image: NetworkImage(_imageUrl),
+            ),
+            Container(
+              color: CupertinoColors.white,
+              padding: const EdgeInsets.all(10),
+              child: Center(
+                /* child: CupertinoSearchTextField(
+                //controller: _controller,
+                prefixIcon: TextButton(onPressed: (){
+                  Navigator.pushNamed(context, 'registration');
+                }, child: const Text('Click here to',style: TextStyle(
+                    fontSize: 18,color: Colors.grey
+                ),)),
+              ),*/
+
+                child:
+                TextButton(onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => Filter()));
+                }, child: const Text('Click here to search',style: TextStyle(
+                    fontSize: 18,color: Colors.grey
+                ),
+                )
+                ),
+              ),
+            ),
+            buildBoxB(context, "DHA", "Dhaka", "CHA", "Chittagong", "06-06-2024", "02:35 am", "BU1234"),
+            buildBoxB(context, "RAN", "Rangpur", "RAJ", "Rajshahi", "06-06-2024", "04:35 am", "UB1234"),
+            buildBoxB(context, "CHA", "Chittagong", "RAJ", "Rajshahi", "06-06-2024", "04:35 am", "UB1234"),
+            buildBoxB(context, "MYN", "Mymensingh", "DHA", "Dhaka", "06-06-2024", "07:35 am", "UB1234"),
+            buildBoxB(context, "MYN", "Mymensingh", "RAN", "Rangpur", "06-06-2024", "04:35 am", "UB1234"),
+            buildBoxB(context, "SYL", "Sylhet", "DHA", "Dhaka", "06-06-2024", "07:35 am", "UB1234"),
+          ],
+        ),
+      ),
+    );
+
+    Widget busContent = SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          children: <Widget>[
+            Image(
+              image: NetworkImage(_imageUrl),
+            ),
+            Container(
+              color: CupertinoColors.white,
+              padding:const EdgeInsets.all(10),
+              child: Center(
+                /* child: CupertinoSearchTextField(
+                //controller: _controller,
+                prefixIcon: TextButton(onPressed: (){
+                  Navigator.pushNamed(context, 'registration');
+                }, child: const Text('Click here to',style: TextStyle(
+                    fontSize: 18,color: Colors.grey
+                ),)),
+              ),*/
+
+                child:
+                TextButton(onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => Filter()));
+                }, child: const Text('Click here to search',style: TextStyle(
+                    fontSize: 18,color: Colors.grey
+                ),
+                )
+                ),
+              ),
+            ),
+            buildBoxTrain(context, "SYL", "Sylhet", "KHU", "Khulna", "23-05-2024", "06:35 am", "UL1234"),
+            buildBoxTrain(context, "BAR", "Barisal", "MYM", "Mymensingh", "23-05-2024", "09:35", "KL0464"),
+            buildBoxTrain(context, "DHA", "Dhaka", "MYM", "Mymensingh", "23-05-2024", "03:35", "FL0584"),
+            buildBoxTrain(context, "CHA", "Chittagong", "MYM", "Mymensingh", "23-05-2024", "09:35", "KL0564"),
+            buildBoxTrain(context, "RAN", "Rangpur", "MYM", "Mymensingh", "23-05-2024", "03:35", "TL0564"),
+            buildBoxTrain(context, "DHA", "Dhaka", "RAJ", "Rajshahi", "23-05-2024", "09:35", "PL0964"),
+          ],
+        ),
+      ),
+    );
+
+    Widget trainContent = SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          children: <Widget>[
+            Image(
+              image: NetworkImage(_imageUrl),
+            ),
+            Container(
+              color: CupertinoColors.white,
+              padding: const EdgeInsets.all(10),
+              child: Center(
+                /* child: CupertinoSearchTextField(
+                //controller: _controller,
+                prefixIcon: TextButton(onPressed: (){
+                  Navigator.pushNamed(context, 'registration');
+                }, child: const Text('Click here to',style: TextStyle(
+                    fontSize: 18,color: Colors.grey
+                ),)),
+              ),*/
+
+                child:
+                TextButton(onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => Filter()));
+                }, child: const Text('Click here to search',style: TextStyle(
+                    fontSize: 18,color: Colors.grey
+                ),
+                )
+                ),
+              ),
+            ),
+            buildBoxB(context, "FAR", "Faridpur", "MUN", "Munshiganj", "24-05-2024", "12:00 am", "NI4207"),
+            buildBoxB(context, "RAJ", "Rajshahi", "DHA", "Dhaka", "24-05-2024", "02:35 am", "JO2454"),
+          ],
+        ),
+      ),
+    );
+    List<Widget> _widgetOptions = <Widget>[
+      shuttleContent,
+      busContent,
+      trainContent,
+    ];
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -58,112 +229,93 @@ class _State extends State<homeS> {
         backgroundColor: Colors.black,
       ),
       body: Center(
-
        // mainAxisAlignment: MainAxisAlignment.start,
-        child:SingleChildScrollView(
-          child: Container(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              children: <Widget>[
-              Image(
-                image: NetworkImage('https://images.unsplash.com/photo-1570125909517-53cb21c89ff2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      padding: EdgeInsets.all(10.0),
-                      decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Color(0xFF737171),
-                                Color(0xFFFDF9FD),
-                              ])
+        child: Column(
+          children: <Widget>[
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.all(10.0),
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Color(0xFF737171),
+                          Color(0xFFFDF9FD),
+                        ],
                       ),
-                      child: Column(
-                        children:[ IconButton(
+                    ),
+                    child: Column(
+                      children: [
+                        IconButton(
                           icon: Icon(Icons.airport_shuttle),
                           iconSize: 35.0,
-                          onPressed: changeColor,
+                          onPressed: () => _onIconTapped(0),
                         ),
-                        ],
-                      ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(width: 2,),
-                  Expanded(
-                    child: Container(
-                      padding: EdgeInsets.all(10.0),
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Color(0xFF737171),
-                              Color(0xFFFDF9FD),
-                            ]),
-                      ),
-                      child: Column(
-                        children:[ IconButton(
-                          icon: Icon(Icons.train),
-                          iconSize: 35.0,
-                          onPressed: changeColor,
-                        ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 2,),
-                  Expanded(
-                    child: Container(
-                      padding: EdgeInsets.all(10.0),
-                      decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Color(0xFF737171),
-                                Color(0xFFFDF9FD),
-                              ])
-                      ),
-                      child: Column(
-                        children:[ IconButton(
-                          icon: Icon(Icons.airplane_ticket),
-                          iconSize: 35.0,
-                          onPressed: changeColor,
-                        ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                color: CupertinoColors.white,
-                padding:const EdgeInsets.all(10),
-                child: Center(
-                  child: CupertinoSearchTextField(
-                    controller: _controller,
                   ),
                 ),
-              ),
-                buildBox("DHA","Dhaka","CHA","Chittagong","23-05-2024","02:35 am","BU1234"),
-                buildBox("RAN","Rangpur","RAJ","Rajshahi","23-05-2024","04:35 am","UB1234"),
-                buildBox("SYL","Sylhet","KHU","Khulna","23-05-2024","06:35 am","UL1234"),
-                buildBox("BAR","Barisal","MYM","Mymensingh","23-05-2024","09:35","KL0564"),
-                buildBox("FAR","Faridpur","MUN","Munshiganj","24-05-2024","12:00 am","NI4207"),
-                buildBox("RAJ","Rajshahi","DHA","Dhaka","24-05-2024","02:35 am","JO2454"),
-                buildBox("KHU","Khulna","BAR","Barisal","24-05-2024","01:35 am","ro3024"),
-            ],
+                const SizedBox(width: 2,),
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.all(10.0),
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Color(0xFF737171),
+                          Color(0xFFFDF9FD),
+                        ],
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.train),
+                          iconSize: 35.0,
+                          onPressed: () => _onIconTapped(1),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 2,),
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.all(10.0),
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Color(0xFF737171),
+                          Color(0xFFFDF9FD),
+                        ],
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.airplane_ticket),
+                          iconSize: 35.0,
+                          onPressed: () => _onIconTapped(2),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-        )
-
+            Expanded(
+              child: _widgetOptions.elementAt(_selectedIndex),
+            ),
+          ],
+        ),
       ),
-
-
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -224,117 +376,33 @@ class _State extends State<homeS> {
               child: ListTile(
                 title: Text('Log out'),
                 onTap: (){
-                 // Navigator.push(context, MaterialPageRoute(builder: (context) => BottomAppBar()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => BottomBar()));
                 },
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-  Widget buildBox(String FROM,String FROM1,String TO,String TO1,String date,String time,String no) {
-    return InkWell(
-        onTap: () {
-      // Handle tap event here
-          Navigator.push(context, MaterialPageRoute(builder: (context) => BusSeatSelection()));
 
-        },
-
-      child:Container(
-
-      margin: EdgeInsets.all(16.0),
-      padding: EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      FROM,
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(FROM1),
-                  ],
-                ),
-              ),
-              Icon(
-                Icons.airport_shuttle,
-                size: 32,
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      TO,
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(TO1),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 16.0),
-          Divider(thickness: 1, color: Colors.grey),
-          SizedBox(height: 16.0),
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Date', style: TextStyle(color: Colors.grey)),
-                    Text(date),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text('Bus', style: TextStyle(color: Colors.grey)),
-                    Text(no),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text('Time', style: TextStyle(color: Colors.grey)),
-                    Text(time),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-      )
+           bottomNavigationBar: BottomNavigationBar(
+             items: const <BottomNavigationBarItem>[
+               BottomNavigationBarItem(
+                 icon: Icon(Icons.home),
+                 label: 'Home',
+               ),
+               BottomNavigationBarItem(
+                 icon: Icon(Icons.qr_code_2),
+                 label: 'QR code',
+               ),
+               BottomNavigationBarItem(
+                 icon: Icon(Icons.camera),
+                 label: 'Map',
+               ),
+             ],
+             currentIndex: _selectedIndex,
+             selectedItemColor: Colors.purple,
+             onTap: _onItemTapped,
+           ),
     );
   }
 }
