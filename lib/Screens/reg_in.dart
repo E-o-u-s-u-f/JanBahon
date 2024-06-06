@@ -6,6 +6,9 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jan_bahon/HomePage/homeScreen.dart';
 
+import '../HomePage/homeScreen.dart';
+import 'log_in.dart';
+
 class regScreen extends StatefulWidget {
   @override
   _regScreenState createState() => _regScreenState();
@@ -170,10 +173,14 @@ class _regScreenState extends State<regScreen> {
                       ),
                       const SizedBox(height: 10,),
                       const SizedBox(height: 70.0,),
-                      _isLoading
-                          ? CircularProgressIndicator()
-                          : GestureDetector(
-                        onTap: _signUp,
+
+                      GestureDetector(
+                        onTap: (){
+                          _signUp();
+                          Navigator.push(context,
+                          MaterialPageRoute(builder: (context)=> const homeS()));
+                        },
+
                         child: Container(
                           height: 55,
                           width: 300,

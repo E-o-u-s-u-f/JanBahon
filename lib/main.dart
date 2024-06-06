@@ -8,6 +8,7 @@ import 'Screens/reg_in.dart';
 import 'Screens/log_in.dart';
 import 'package:animate_do/animate_do.dart';
 import 'HomePage/BusOptions.dart';
+import 'intro.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,13 +28,15 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
+
       initialRoute: '/',
       routes: {
-        //'/': (context) => intro(),       // merge korar por add krbo .on krbo..apatoto thak
+        '/': (context) => intro(),       // merge korar por add krbo .on krbo..apatoto thak
 
 
         '/home': (context) => AuthWrapper(), // Define your HomeScreen widget
       },
+
     );
   }
 
@@ -50,7 +53,7 @@ class AuthWrapper extends StatelessWidget {
         } else if (snapshot.hasData && snapshot.data != null) {
           return homeS(); // User is logged in
         } else {
-          return regScreen(); // User is not logged in
+          return BottomBar( ); // User is not logged in
         }
       },
     );

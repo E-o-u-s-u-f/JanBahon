@@ -42,6 +42,7 @@ dependencies:
   cupertino_icons: ^1.0.6
   fluentui_icons: ^1.0.0
   animate_do: ^3.3.4
+  dropdown_button2: ^2.3.9
 dev_dependencies:
   flutter_test:
     sdk: flutter
