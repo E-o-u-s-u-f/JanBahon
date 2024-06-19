@@ -2,13 +2,41 @@ import 'package:flutter/material.dart';
 
 import 'bus_seat_selection.dart';
 
-Widget buildBoxB(BuildContext context, String FROM, String FROM1, String TO, String TO1, String date, String time, String no) {
+Widget buildBoxB(BuildContext context, String FROM, String FROM1, String TO, String TO1, String date, String time, String no,int cur) {
+  String description= "Bus";
+  IconData getIcon(int cur) {
+
+    switch (cur) {
+      case 0:
+        description= "Bus";
+        return Icons.airport_shuttle; // Bus icon
+      case 1:
+        description ="Train";
+        return Icons.train; // Train icon
+      case 2:
+        description = "Airplane";
+        return Icons.airplanemode_active;// Airplane icon
+      default:
+        description = "Bus";
+        return Icons.directions_bus; // Default icon (bus)
+    }
+  }
+  IconData icon = getIcon(cur);
   return InkWell(
     onTap: () {
       // Handle tap event here
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => BusSeatSelection()),
+        MaterialPageRoute(builder: (context) => BusSeatSelection(
+          FROM: FROM,
+          TO: TO,
+          Time: time,
+          date: date,
+          no: no,
+          description: description,
+
+        )
+        ),
       );
     },
     child: Container(
@@ -46,10 +74,7 @@ Widget buildBoxB(BuildContext context, String FROM, String FROM1, String TO, Str
                   ],
                 ),
               ),
-              Icon(
-                Icons.airport_shuttle,
-                size: 32,
-              ),
+              Icon(icon, size: 32,),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,

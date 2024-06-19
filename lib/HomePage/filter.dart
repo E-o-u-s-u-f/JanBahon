@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class Filter extends StatefulWidget {
-  const Filter({super.key});
+class Filtered extends StatefulWidget {
+  const Filtered({super.key});
 
   @override
-  State<Filter> createState() => _FilterState();
+  State<Filtered> createState() => _FilterState();
 }
 
-class _FilterState extends State<Filter> {
+class _FilterState extends State<Filtered> {
   String? selectedFrom;
   String? selectedTo;
 

@@ -1,17 +1,92 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import 'lib/pdf_page.dart';
 
 class BusSeatSelection extends StatefulWidget {
-  const BusSeatSelection({super.key});
+  final String FROM;
+  final String TO;
+  final String Time;
+  final String date;
+  final String no;
+  final String description;
+
+  BusSeatSelection({
+    required this.FROM,
+    required this.TO,
+    required this.Time,
+    required this.date,
+    required this.no,
+    required this.description,
+
+  });
 
   @override
   State<BusSeatSelection> createState() => _BusSeatSelectionState();
 }
 
 class _BusSeatSelectionState extends State<BusSeatSelection> {
-  // State to keep track of selected seats
   final Set<int> _selectedSeats = {};
-  bool _isAnySeatSelected = false; // Track if any seat is selected
+  bool _isAnySeatSelected = false;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  List<int> _reservedSeats = [];
+  String? _documentId;
+  @override
+  void initState() {
+    super.initState();
+    _fetchReservedSeats();
+  }
+
+  Future<void> _fetchReservedSeats() async {
+    // Fetch the document ID for the specific transport instance
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(widget.description)
+        .where('FROM', isEqualTo: widget.FROM)
+        .where('TO', isEqualTo: widget.TO)
+        .where('Time', isEqualTo: widget.Time)
+        .where('date', isEqualTo: widget.date)
+        .where('no', isEqualTo: widget.no)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      DocumentSnapshot doc = querySnapshot.docs.first;
+      setState(() {
+        _documentId = doc.id;
+      });
+
+      final data = doc.data() as Map<String, dynamic>?;
+      if (data != null && data.containsKey('reservedSeats')) {
+        setState(() {
+          _reservedSeats = List<int>.from(data['reservedSeats']);
+        });
+      }
+    }
+  }
+
+  Future<void> _reserveSeats() async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      WriteBatch batch = _firestore.batch();
+
+      // Update user document with reserved seats
+      DocumentReference userRef = _firestore.collection('Users').doc(user.uid);
+      batch.set(userRef, {
+        'reservedSeats': _selectedSeats.toList(),
+      }, SetOptions(merge: true));
+
+      // Update transport document with reserved seats
+      DocumentReference transportRef = _firestore.collection(widget.description).doc(_documentId);
+      batch.update(transportRef, {
+        'reservedSeats': FieldValue.arrayUnion(_selectedSeats.toList()),
+      });
+
+      // Commit the batch
+      await batch.commit();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,22 +157,22 @@ class _BusSeatSelectionState extends State<BusSeatSelection> {
                             Row(
                               children: [
                                 for (int j = 0; j < 2; j++)
-                                  _seatLayout(i * 4 + j),
+                                  _seatLayout(i * 4 + j + 1),
                                 SizedBox(
                                   width: 47,
                                 ),
                                 for (int j = 2; j < 4; j++)
-                                  _seatLayout(i * 4 + j),
+                                  _seatLayout(i * 4 + j + 1),
                               ],
                             ),
                           // Last row with an extra seat in the gap
                           Row(
                             children: [
-                              _seatLayout(36),
                               _seatLayout(37),
-                              _seatLayout(38), // Extra seat in the gap
-                              _seatLayout(39),
+                              _seatLayout(38),
+                              _seatLayout(39), // Extra seat in the gap
                               _seatLayout(40),
+                              _seatLayout(41),
                             ],
                           ),
                         ],
@@ -119,29 +194,61 @@ class _BusSeatSelectionState extends State<BusSeatSelection> {
             child: Row(
               children: [
                 Text("Seat: ${_selectedSeats.length}/41"),
-                // Updated total seat count
                 SizedBox(
                   width: 24,
                 ),
                 Expanded(
-                  child: Container(
-                    height: 54,
-                    decoration: BoxDecoration(
-                      color: _isAnySeatSelected ? Colors.red : Colors.amberAccent,
-                      borderRadius: BorderRadius.circular(32),
-                    ),
-                    child: Center(
-                      child: Text(
-                        "Confirm",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                  child: GestureDetector(
+                    onTap: _isAnySeatSelected
+                        ? () async {
+                      await _reserveSeats();
+                      setState(() {
+                        _reservedSeats.addAll(_selectedSeats);
+                        _selectedSeats.clear();
+                        _isAnySeatSelected = false;
+                      });
+
+                    }
+                        : null,
+                    child: Container(
+                      height: 54,
+                      decoration: BoxDecoration(
+                        color: _isAnySeatSelected
+                            ? Colors.red
+                            : Colors.amberAccent,
+                        borderRadius: BorderRadius.circular(32),
+                      ),
+                      child: Center(
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PDFPage(
+                                  selectedSeats: _selectedSeats,
+                                  FROM: widget.FROM,
+                                  TO: widget.TO,
+                                  Time: widget.Time,
+                                  date: widget.date,
+                                  no: widget.no,
+                                  description: widget.description,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            "Confirm",
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -150,21 +257,23 @@ class _BusSeatSelectionState extends State<BusSeatSelection> {
     );
   }
 
-  Widget _seatLayout(int index) {
-    final bool isSelected = _selectedSeats.contains(index);
+  Widget _seatLayout(int seatNumber) {
+    final bool isSelected = _selectedSeats.contains(seatNumber);
+    final bool isReserved = _reservedSeats.contains(seatNumber);
+
     return GestureDetector(
-      onTap: () {
+      onTap: !isReserved
+          ? () {
         setState(() {
           if (isSelected) {
-            _selectedSeats.remove(index);
+            _selectedSeats.remove(seatNumber);
           } else {
-            _selectedSeats.add(index);
+            _selectedSeats.add(seatNumber);
           }
-
-          _isAnySeatSelected =
-              _selectedSeats.isNotEmpty;
+          _isAnySeatSelected = _selectedSeats.isNotEmpty;
         });
-      },
+      }
+          : null,
       child: Container(
         width: 40,
         height: 40,
@@ -175,83 +284,24 @@ class _BusSeatSelectionState extends State<BusSeatSelection> {
             width: 1,
           ),
           borderRadius: BorderRadius.circular(5),
-          color: isSelected ? Colors.lightGreenAccent : Colors.white,
+          color: isReserved
+              ? Colors.green
+              : isSelected
+              ? Colors.lightGreenAccent
+              : Colors.white,
         ),
-        child: Stack(
-          children: [
-            Positioned(
-              top: 5,
-              bottom: 5,
-              left: 5,
-              right: 5,
-              child: SizedBox(
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.black,
-                      width: 1,
-                    ),
-                    borderRadius: BorderRadius.circular(5),
-                    color: isSelected ? Colors.lightGreenAccent : Colors.white,
-                  ),
-                ),
-              ),
+        child: Center(
+          child: Text(
+            '$seatNumber',
+            style: TextStyle(
+              color: isReserved
+                  ? Colors.white
+                  : isSelected
+                  ? Colors.black
+                  : Colors.black,
+              fontWeight: FontWeight.bold,
             ),
-            Positioned(
-              top: 29,
-              bottom: 5,
-              left: 5,
-              right: 5,
-              child: SizedBox(
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.black,
-                      width: 1,
-                    ),
-                    borderRadius: BorderRadius.circular(5),
-                    color: isSelected ? Colors.lightGreenAccent : Colors.white,
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              top: 15,
-              bottom: 5,
-              left: 4,
-              right: 30,
-              child: SizedBox(
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.black,
-                      width: 1,
-                    ),
-                    borderRadius: BorderRadius.circular(5),
-                    color: isSelected ? Colors.lightGreenAccent : Colors.white,
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              top: 15,
-              bottom: 5,
-              left: 30,
-              right: 4,
-              child: SizedBox(
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.black,
-                      width: 1,
-                    ),
-                    borderRadius: BorderRadius.circular(5),
-                    color: isSelected ? Colors.lightGreenAccent : Colors.white,
-                  ),
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

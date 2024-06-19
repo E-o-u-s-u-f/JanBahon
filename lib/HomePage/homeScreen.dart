@@ -1,19 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:jan_bahon/HomePage/filter.dart';
 
-import 'package:jan_bahon/HomePage/bus_seat_selection.dart';
 import '../Screens/log_in.dart';
-
-import 'package:jan_bahon/HomePage/lib/trainOption.dart';
-import 'package:jan_bahon/Seat&BuyTicket/bus_seat_selection.dart';
 import 'BusOptions.dart';
-
-import 'filter.dart';
-import 'lib/Screens/log_in.dart';
-import 'lib/Seat&BuyTicket/bus_seat_selection.dart';
 
 class homeS extends StatefulWidget {
   const homeS({super.key});
@@ -24,44 +15,60 @@ class homeS extends StatefulWidget {
 
 class _State extends State<homeS> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final TextEditingController _controller=TextEditingController(text: 'Filter');
+  final TextEditingController _controller = TextEditingController(text: 'Filter');
 
-
-  Color  textB1=Colors.cyan;
-  Color textB2=Colors.pinkAccent;
-  Color  textB3=Colors.orangeAccent;
-  Color containerCol=Colors.cyan;
-  Color containerCol2=Colors.pinkAccent;
-  Color containerCol3=Colors.orangeAccent;
-  int _selectedIndex=0;
-  int selInd=0;
+  Color textB1 = Colors.cyan;
+  Color textB2 = Colors.pinkAccent;
+  Color textB3 = Colors.orangeAccent;
+  Color containerCol = Colors.cyan;
+  Color containerCol2 = Colors.pinkAccent;
+  Color containerCol3 = Colors.orangeAccent;
+  int _selectedIndex = 0;
+  int selInd = 0;
   String _imageUrl = 'https://images.unsplash.com/photo-1570125909517-53cb21c89ff2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
 
+  Future<List<Map<String, dynamic>>> fetchBusData() async {
+    var firestore = FirebaseFirestore.instance;
+    QuerySnapshot qn = await firestore.collection("Bus").get();
+    return qn.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+  }
 
-  void changeColor(){
+  Future<List<Map<String, dynamic>>> fetchTrainData() async {
+    var firestore = FirebaseFirestore.instance;
+    QuerySnapshot qn = await firestore.collection("Train").get();
+    return qn.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+  }
+
+  Future<List<Map<String, dynamic>>> fetchAirplaneData() async {
+    var firestore = FirebaseFirestore.instance;
+    QuerySnapshot qn = await firestore.collection("Airplane").get();
+    return qn.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+  }
+
+  void changeColor() {
     setState(() {
-      if(containerCol==textB1) {
+      if (containerCol == textB1) {
         containerCol == Colors.white ? Colors.cyan : Colors.white;
-      }else if(containerCol2==textB2){
-        containerCol2== Colors.white ? Colors.pinkAccent : Colors.white;
-      }else{
+      } else if (containerCol2 == textB2) {
+        containerCol2 == Colors.white ? Colors.pinkAccent : Colors.white;
+      } else {
         containerCol3 == Colors.white ? Colors.orangeAccent : Colors.white;
       }
     });
   }
-  static List<Widget> _widgetOptions = <Widget>[
+  static List<Widget> _widgetOptions1 = <Widget>[
     homeS(),
     //MapS(),
-   // QrCode(),
+    // QrCode(),
   ];
-  void _onItemTapped(int index) {
+  void _onItemTapped(int index1) {
     setState(() {
-      _selectedIndex = index;
+      selInd = index1;
     });
   }
   void _onIconTapped(int index) {
     setState(() {
-      selInd = index;
+      _selectedIndex = index;
       switch (index) {
         case 0:
           _imageUrl = 'https://images.unsplash.com/photo-1570125909517-53cb21c89ff2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
@@ -75,134 +82,165 @@ class _State extends State<homeS> {
         default:
           _imageUrl = 'https://images.unsplash.com/photo-1570125909517-53cb21c89ff2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
       }
-
     });
   }
 
   @override
   Widget build(BuildContext context) {
 
-    Widget shuttleContent = SingleChildScrollView(
-      child: Container(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: <Widget>[
-            Image(
-              image: NetworkImage(_imageUrl),
-            ),
-            Container(
-              color: CupertinoColors.white,
-              padding: const EdgeInsets.all(10),
-              child: Center(
-                /* child: CupertinoSearchTextField(
-                //controller: _controller,
-                prefixIcon: TextButton(onPressed: (){
-                  Navigator.pushNamed(context, 'registration');
-                }, child: const Text('Click here to',style: TextStyle(
-                    fontSize: 18,color: Colors.grey
-                ),)),
-              ),*/
-
-                child:
-                TextButton(onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => Filter()));
-                }, child: const Text('Click here to search',style: TextStyle(
-                    fontSize: 18,color: Colors.grey
-                ),
-                )
-                ),
+    Widget shuttleContent = FutureBuilder(
+      future: fetchBusData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData ) {
+          return Center(child: Text('No data found'));
+        } else {
+          var busData = snapshot.data as List<Map<String, dynamic>>;
+          return SingleChildScrollView(
+            child: Container(
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                children: <Widget>[
+                  Image(
+                    image: NetworkImage(_imageUrl),
+                  ),
+                  Container(
+                    color: CupertinoColors.white,
+                    padding: const EdgeInsets.all(10),
+                    child: Center(
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) =>Filtered()));
+                        },
+                        child: const Text('Click here to search', style: TextStyle(fontSize: 18, color: Colors.grey)),
+                      ),
+                    ),
+                  ),
+                  for (var bus in busData)
+                    buildBoxB(
+                      context,
+                      bus['FROM'],
+                      bus['FROM1'],
+                      bus['TO'],
+                      bus['TO1'],
+                      bus['Date'],
+                      bus['time'],
+                      bus['no'],
+                      _selectedIndex,
+                    ),
+                ],
               ),
             ),
-            buildBoxB(context, "DHA", "Dhaka", "CHA", "Chittagong", "06-06-2024", "02:35 am", "BU1234"),
-            buildBoxB(context, "RAN", "Rangpur", "RAJ", "Rajshahi", "06-06-2024", "04:35 am", "UB1234"),
-            buildBoxB(context, "CHA", "Chittagong", "RAJ", "Rajshahi", "06-06-2024", "04:35 am", "UB1234"),
-            buildBoxB(context, "MYN", "Mymensingh", "DHA", "Dhaka", "06-06-2024", "07:35 am", "UB1234"),
-            buildBoxB(context, "MYN", "Mymensingh", "RAN", "Rangpur", "06-06-2024", "04:35 am", "UB1234"),
-            buildBoxB(context, "SYL", "Sylhet", "DHA", "Dhaka", "06-06-2024", "07:35 am", "UB1234"),
-          ],
-        ),
-      ),
+          );
+        }
+      },
     );
 
-    Widget busContent = SingleChildScrollView(
-      child: Container(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: <Widget>[
-            Image(
-              image: NetworkImage(_imageUrl),
-            ),
-            Container(
-              color: CupertinoColors.white,
-              padding:const EdgeInsets.all(10),
-              child: Center(
-                /* child: CupertinoSearchTextField(
-                //controller: _controller,
-                prefixIcon: TextButton(onPressed: (){
-                  Navigator.pushNamed(context, 'registration');
-                }, child: const Text('Click here to',style: TextStyle(
-                    fontSize: 18,color: Colors.grey
-                ),)),
-              ),*/
-
-                child:
-                TextButton(onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => Filter()));
-                }, child: const Text('Click here to search',style: TextStyle(
-                    fontSize: 18,color: Colors.grey
-                ),
-                )
-                ),
+    Widget busContent = FutureBuilder(
+      future: fetchTrainData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData ) {
+          return Center(child: Text('No data found'));
+        } else {
+          var trainData = snapshot.data as List<Map<String, dynamic>>;
+          return SingleChildScrollView(
+            child: Container(
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                children: <Widget>[
+                  Image(
+                    image: NetworkImage(_imageUrl),
+                  ),
+                  Container(
+                    color: CupertinoColors.white,
+                    padding: const EdgeInsets.all(10),
+                    child: Center(
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) =>Filtered()));
+                        },
+                        child: const Text('Click here to search', style: TextStyle(fontSize: 18, color: Colors.black12)),
+                      ),
+                    ),
+                  ),
+                  for (var train in trainData)
+                    buildBoxB(
+                      context,
+                      train['FROM'],
+                      train['FROM1'],
+                      train['TO'],
+                      train['TO1'],
+                      train['Date'],
+                      train['time'],
+                      train['no'],
+                      _selectedIndex,
+                    ),
+                ],
               ),
             ),
-            buildBoxTrain(context, "SYL", "Sylhet", "KHU", "Khulna", "23-05-2024", "06:35 am", "UL1234"),
-            buildBoxTrain(context, "BAR", "Barisal", "MYM", "Mymensingh", "23-05-2024", "09:35", "KL0464"),
-            buildBoxTrain(context, "DHA", "Dhaka", "MYM", "Mymensingh", "23-05-2024", "03:35", "FL0584"),
-            buildBoxTrain(context, "CHA", "Chittagong", "MYM", "Mymensingh", "23-05-2024", "09:35", "KL0564"),
-            buildBoxTrain(context, "RAN", "Rangpur", "MYM", "Mymensingh", "23-05-2024", "03:35", "TL0564"),
-            buildBoxTrain(context, "DHA", "Dhaka", "RAJ", "Rajshahi", "23-05-2024", "09:35", "PL0964"),
-          ],
-        ),
-      ),
+          );
+        }
+      },
     );
 
-    Widget trainContent = SingleChildScrollView(
-      child: Container(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: <Widget>[
-            Image(
-              image: NetworkImage(_imageUrl),
-            ),
-            Container(
-              color: CupertinoColors.white,
-              padding: const EdgeInsets.all(10),
-              child: Center(
-                /* child: CupertinoSearchTextField(
-                //controller: _controller,
-                prefixIcon: TextButton(onPressed: (){
-                  Navigator.pushNamed(context, 'registration');
-                }, child: const Text('Click here to',style: TextStyle(
-                    fontSize: 18,color: Colors.grey
-                ),)),
-              ),*/
-
-                child:
-                TextButton(onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => Filter()));
-                }, child: const Text('Click here to search',style: TextStyle(
-                    fontSize: 18,color: Colors.grey
-                ),
-                )
-                ),
+    Widget trainContent = FutureBuilder(
+      future: fetchAirplaneData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData ) {
+          return Center(child: Text('No data found'));
+        } else {
+          var airplaneData = snapshot.data as List<Map<String, dynamic>>;
+          return SingleChildScrollView(
+            child: Container(
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                children: <Widget>[
+                  Image(
+                    image: NetworkImage(_imageUrl),
+                  ),
+                  Container(
+                    color: CupertinoColors.white,
+                    padding: const EdgeInsets.all(10),
+                    child: Center(
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) =>Filtered()));
+                        },
+                        child: const Text('Click here to search', style: TextStyle(fontSize: 18, color: Colors.grey)),
+                      ),
+                    ),
+                  ),
+                  for (var airplane in airplaneData)
+                    buildBoxB(
+                      context,
+                      airplane['FROM'],
+                      airplane['FROM1'],
+                      airplane['TO'],
+                      airplane['TO1'],
+                      airplane['Date'],
+                      airplane['time'],
+                      airplane['no'],
+                      _selectedIndex,
+                    ),
+                ],
               ),
             ),
-            buildBoxB(context, "FAR", "Faridpur", "MUN", "Munshiganj", "24-05-2024", "12:00 am", "NI4207"),
-            buildBoxB(context, "RAJ", "Rajshahi", "DHA", "Dhaka", "24-05-2024", "02:35 am", "JO2454"),
-          ],
-        ),
-      ),
+          );
+        }
+      },
     );
+
     List<Widget> _widgetOptions = <Widget>[
       shuttleContent,
       busContent,
@@ -229,7 +267,6 @@ class _State extends State<homeS> {
         backgroundColor: Colors.black,
       ),
       body: Center(
-       // mainAxisAlignment: MainAxisAlignment.start,
         child: Column(
           children: <Widget>[
             Row(
@@ -338,44 +375,38 @@ class _State extends State<homeS> {
             ),
             Container(
               decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: Colors.grey,width: .9)),
+                border: Border(bottom: BorderSide(color: Colors.grey, width: .9)),
               ),
               child: ListTile(
                 title: Text('Settings'),
-                onTap: (){
-
-                },
+                onTap: () {},
               ),
             ),
             Container(
               decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: Colors.grey,width: .8)),
+                border: Border(bottom: BorderSide(color: Colors.grey, width: .8)),
               ),
               child: ListTile(
                 title: Text('Help'),
-                onTap: (){
-
-                },
+                onTap: () {},
               ),
             ),
             Container(
               decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: Colors.grey,width: .8)),
+                border: Border(bottom: BorderSide(color: Colors.grey, width: .8)),
               ),
               child: ListTile(
                 title: Text('Contact'),
-                onTap: (){
-
-                },
+                onTap: () {},
               ),
             ),
             Container(
               decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: Colors.grey,width: .8)),
+                border: Border(bottom: BorderSide(color: Colors.grey, width: .8)),
               ),
               child: ListTile(
                 title: Text('Log out'),
-                onTap: (){
+                onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => BottomBar()));
                 },
               ),
@@ -383,26 +414,25 @@ class _State extends State<homeS> {
           ],
         ),
       ),
-
-           bottomNavigationBar: BottomNavigationBar(
-             items: const <BottomNavigationBarItem>[
-               BottomNavigationBarItem(
-                 icon: Icon(Icons.home),
-                 label: 'Home',
-               ),
-               BottomNavigationBarItem(
-                 icon: Icon(Icons.qr_code_2),
-                 label: 'QR code',
-               ),
-               BottomNavigationBarItem(
-                 icon: Icon(Icons.camera),
-                 label: 'Map',
-               ),
-             ],
-             currentIndex: _selectedIndex,
-             selectedItemColor: Colors.purple,
-             onTap: _onItemTapped,
-           ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.qr_code_2),
+            label: 'QR code',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.camera),
+            label: 'Map',
+          ),
+        ],
+        currentIndex: selInd,
+        selectedItemColor: Colors.purple,
+        onTap: _onItemTapped,
+      ),
     );
   }
 }
