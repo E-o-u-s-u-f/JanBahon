@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jan_bahon/HomePage/homeScreen.dart';
 
 import '../HomePage/homeScreen.dart';
@@ -20,6 +21,7 @@ class _regScreenState extends State<regScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
 
@@ -33,8 +35,17 @@ class _regScreenState extends State<regScreen> {
           email: _emailController.text,
           password: _passwordController.text,
         );
+
         // Optionally update user display name
         await userCredential.user!.updateDisplayName(_fullNameController.text);
+
+        // Store additional user information in Firestore
+        await _firestore.collection('users').doc(userCredential.user!.uid).set({
+          'fullName': _fullNameController.text,
+          'email': _emailController.text,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+
         print("User signed up: ${userCredential.user}");
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const homeS()));
       } on FirebaseAuthException catch (e) {
@@ -53,6 +64,7 @@ class _regScreenState extends State<regScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           Container(
@@ -173,14 +185,8 @@ class _regScreenState extends State<regScreen> {
                       ),
                       const SizedBox(height: 10,),
                       const SizedBox(height: 70.0,),
-
                       GestureDetector(
-                        onTap: (){
-                          _signUp();
-                          Navigator.push(context,
-                          MaterialPageRoute(builder: (context)=> const homeS()));
-                        },
-
+                        onTap: _signUp,
                         child: Container(
                           height: 55,
                           width: 300,
@@ -206,28 +212,33 @@ class _regScreenState extends State<regScreen> {
                         ),
                       ),
                       const SizedBox(height: 80,),
-                      const Align(
-                        alignment: Alignment.bottomRight,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              "Already have an account",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => BottomBar()));
+                        },
+                        child: const Align(
+                          alignment: Alignment.bottomRight,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                "Already have an account",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey,
+                                ),
                               ),
-                            ),
-                            Text(
-                              "Sign in",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 17,
-                                color: Colors.black,
+                              Text(
+                                "Sign in",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 17,
+                                  color: Colors.black,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ],
