@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
-
 import '../HomePage/homeScreen.dart';
 import 'log_in.dart';
 
@@ -29,6 +28,7 @@ class _regScreenState extends State<regScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  bool _isDarkModeEnabled = true;
 
   Future<void> _signUp() async {
     try {
@@ -140,7 +140,15 @@ class _regScreenState extends State<regScreen> {
                         onTap: (){
                           _signUp();
                           Navigator.push(context,
-                          MaterialPageRoute(builder: (context)=> const homeS()));
+                          MaterialPageRoute(builder: (context)=> homeS(
+                            darkModeEnabled: _isDarkModeEnabled, // Replace with your initial dark mode state
+                            onDarkModeChanged: (bool isDarkMode) {
+                              // Handle dark mode change if needed
+                              setState(() {
+                                _isDarkModeEnabled = isDarkMode;
+                              });
+                            },
+                          )));
                         },
                         child: Container(
                           height: 55,

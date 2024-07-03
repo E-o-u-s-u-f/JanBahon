@@ -40,15 +40,21 @@ Widget buildBoxTrain(BuildContext context, String FROM, String FROM1, String TO,
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
+                        color: Colors.black,
                       ),
                     ),
-                    Text(FROM1),
+                    Text(FROM1,
+                      style: TextStyle(
+                        color: Colors.black, // Example color
+                      ),
+                    ),
                   ],
                 ),
               ),
               Icon(
                 Icons.train,
                 size: 32,
+                color: Colors.black,
               ),
               Expanded(
                 child: Column(
@@ -59,16 +65,21 @@ Widget buildBoxTrain(BuildContext context, String FROM, String FROM1, String TO,
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
+                        color: Colors.black,
                       ),
                     ),
-                    Text(TO1),
+                    Text(TO1,
+                      style: TextStyle(
+                        color: Colors.black, // Example color
+                      ),
+                    ),
                   ],
                 ),
               ),
             ],
           ),
           SizedBox(height: 16.0),
-          Divider(thickness: 1, color: Colors.grey),
+          Divider(thickness: 1, color: Colors.black),
           SizedBox(height: 16.0),
           Row(
             children: [
@@ -76,8 +87,12 @@ Widget buildBoxTrain(BuildContext context, String FROM, String FROM1, String TO,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Date', style: TextStyle(color: Colors.grey)),
-                    Text(date),
+                    Text('Date', style: TextStyle(color: Colors.black)),
+                    Text(date,
+                      style: TextStyle(
+                        color: Colors.black, // Example color
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -85,8 +100,12 @@ Widget buildBoxTrain(BuildContext context, String FROM, String FROM1, String TO,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text('Train', style: TextStyle(color: Colors.grey)),
-                    Text(no),
+                    Text('Train', style: TextStyle(color: Colors.black)),
+                    Text(no,
+                      style: TextStyle(
+                        color: Colors.black, // Example color
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -94,8 +113,12 @@ Widget buildBoxTrain(BuildContext context, String FROM, String FROM1, String TO,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text('Time', style: TextStyle(color: Colors.grey)),
-                    Text(time),
+                    Text('Time', style: TextStyle(color: Colors.black)),
+                    Text(time,
+                      style: TextStyle(
+                        color: Colors.black, // Example color
+                      ),
+                    ),
                   ],
                 ),
               ),
