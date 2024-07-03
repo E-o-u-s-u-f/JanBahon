@@ -6,7 +6,6 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jan_bahon/HomePage/homeScreen.dart';
-
 import '../HomePage/homeScreen.dart';
 import 'log_in.dart';
 
@@ -21,9 +20,13 @@ class _regScreenState extends State<regScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+
+  bool _isDarkModeEnabled = true;
+
 
   Future<void> _signUp() async {
     if (_formKey.currentState!.validate()) {
@@ -186,7 +189,20 @@ class _regScreenState extends State<regScreen> {
                       const SizedBox(height: 10,),
                       const SizedBox(height: 70.0,),
                       GestureDetector(
-                        onTap: _signUp,
+                        onTap: (){
+                          _signUp();
+                          Navigator.push(context,
+                          MaterialPageRoute(builder: (context)=> homeS(
+                            darkModeEnabled: _isDarkModeEnabled, // Replace with your initial dark mode state
+                            onDarkModeChanged: (bool isDarkMode) {
+                              // Handle dark mode change if needed
+                              setState(() {
+                                _isDarkModeEnabled = isDarkMode;
+                              });
+                            },
+                          )));
+                        },
+
                         child: Container(
                           height: 55,
                           width: 300,

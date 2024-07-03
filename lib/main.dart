@@ -6,48 +6,73 @@ import 'package:jan_bahon/HomePage/homeScreen.dart';
 import 'package:jan_bahon/HomePage/lib/liveTrackMap.dart';
 import 'package:jan_bahon/HomePage/lib/pdf_page.dart';
 import 'package:jan_bahon/firebase_options.dart';
-//import 'package:jan_bahon/splashscreen.dart';
 import 'HomePage/bus_seat_selection.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'Screens/reg_in.dart';
 import 'Screens/log_in.dart';
 import 'package:animate_do/animate_do.dart';
 import 'HomePage/BusOptions.dart';
-import 'intro.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MyApp());
+
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  bool darkModeEnabled = prefs.getBool('darkMode') ?? false;
+
+  runApp(MyApp(darkModeEnabled: darkModeEnabled));
 }
 
+class MyApp extends StatefulWidget {
+  final bool darkModeEnabled;
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.darkModeEnabled});
 
-  // This widget is the root of your application.
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late bool darkModeEnabled;
+
+  @override
+  void initState() {
+    super.initState();
+    darkModeEnabled = widget.darkModeEnabled;
+  }
+
+  void _onDarkModeChanged(bool isDarkMode) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('darkMode', isDarkMode);
+    setState(() {
+      darkModeEnabled = isDarkMode;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-
       title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-
+      theme: darkModeEnabled ? ThemeData.dark() : ThemeData.light(),
       initialRoute: '/',
       routes: {
         '/': (context) => intro(),       // merge korar por add krbo .on krbo..apatoto thak
-        '/home': (context) => AuthWrapper(), // Define your HomeScreen widget
+        '/home': (context) => AuthWrapper(
+          darkModeEnabled: darkModeEnabled,
+          onDarkModeChanged: _onDarkModeChanged,
+        ), // Define your HomeScreen widget
       },
-
     );
   }
-
 }
 
 class AuthWrapper extends StatelessWidget {
+  final bool darkModeEnabled;
+  final ValueChanged<bool> onDarkModeChanged;
+
+  const AuthWrapper(
+      {required this.darkModeEnabled, required this.onDarkModeChanged});
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<User?>(
@@ -56,9 +81,12 @@ class AuthWrapper extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator(); // Show loading indicator
         } else if (snapshot.hasData && snapshot.data != null) {
-          return homeS(); // User is logged in
+          return homeS(
+            darkModeEnabled: darkModeEnabled,
+            onDarkModeChanged: onDarkModeChanged,
+          ); // User is logged in
         } else {
-          return BottomBar( ); // User is not logged in
+          return BottomBar(); // User is not logged in
         }
       },
     );
@@ -68,5 +96,3 @@ class AuthWrapper extends StatelessWidget {
     return FirebaseAuth.instance.currentUser;
   }
 }
-
-

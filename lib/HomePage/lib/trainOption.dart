@@ -1,42 +1,14 @@
 import 'package:flutter/material.dart';
 
-import 'bus_seat_selection.dart';
+import '../../Seat&BuyTicket/bus_seat_selection.dart';
 
-Widget buildBoxB(BuildContext context, String FROM, String FROM1, String TO, String TO1, String date, String time, String no,int cur) {
-  String description= "Bus";
-  IconData getIcon(int cur) {
-
-    switch (cur) {
-      case 0:
-        description= "Bus";
-        return Icons.airport_shuttle; // Bus icon
-      case 1:
-        description ="Train";
-        return Icons.train; // Train icon
-      case 2:
-        description = "Airplane";
-        return Icons.airplanemode_active;// Airplane icon
-      default:
-        description = "Bus";
-        return Icons.directions_bus; // Default icon (bus)
-    }
-  }
-  IconData icon = getIcon(cur);
+Widget buildBoxTrain(BuildContext context, String FROM, String FROM1, String TO, String TO1, String date, String time, String no) {
   return InkWell(
     onTap: () {
       // Handle tap event here
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => BusSeatSelection(
-          FROM: FROM,
-          TO: TO,
-          Time: time,
-          date: date,
-          no: no,
-          description: description,
-
-        )
-        ),
+        MaterialPageRoute(builder: (context) => BusSeatSelection()),
       );
     },
     child: Container(
@@ -80,7 +52,7 @@ Widget buildBoxB(BuildContext context, String FROM, String FROM1, String TO, Str
                 ),
               ),
               Icon(
-                Icons.airport_shuttle,
+                Icons.train,
                 size: 32,
                 color: Colors.black,
               ),
@@ -96,9 +68,11 @@ Widget buildBoxB(BuildContext context, String FROM, String FROM1, String TO, Str
                         color: Colors.black,
                       ),
                     ),
-                    Text(TO1,style: TextStyle(
-                      color: Colors.black, // Example color
-                    ),),
+                    Text(TO1,
+                      style: TextStyle(
+                        color: Colors.black, // Example color
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -114,9 +88,11 @@ Widget buildBoxB(BuildContext context, String FROM, String FROM1, String TO, Str
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Date', style: TextStyle(color: Colors.black)),
-                    Text(date,style: TextStyle(
-                      color: Colors.black, // Example color
-                    ),),
+                    Text(date,
+                      style: TextStyle(
+                        color: Colors.black, // Example color
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -124,10 +100,12 @@ Widget buildBoxB(BuildContext context, String FROM, String FROM1, String TO, Str
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text('Bus', style: TextStyle(color: Colors.black)),
-                    Text(no,style: TextStyle(
-                      color: Colors.black, // Example color
-                    ),),
+                    Text('Train', style: TextStyle(color: Colors.black)),
+                    Text(no,
+                      style: TextStyle(
+                        color: Colors.black, // Example color
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -136,9 +114,11 @@ Widget buildBoxB(BuildContext context, String FROM, String FROM1, String TO, Str
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text('Time', style: TextStyle(color: Colors.black)),
-                    Text(time,style: TextStyle(
-                      color: Colors.black, // Example color
-                    ),),
+                    Text(time,
+                      style: TextStyle(
+                        color: Colors.black, // Example color
+                      ),
+                    ),
                   ],
                 ),
               ),

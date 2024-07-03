@@ -57,6 +57,7 @@ class _BottomBarState extends State<BottomBar> {
     }
   }
 
+  bool _isDarkModeEnabled = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -149,7 +150,16 @@ class _BottomBarState extends State<BottomBar> {
                       SizedBox(height: 40,),
                       FadeInUp(duration: Duration(milliseconds: 1600), child: MaterialButton(
                         onPressed: () {
-                          _login();
+
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => homeS(
+                            darkModeEnabled: _isDarkModeEnabled, // Replace with your initial dark mode state
+                            onDarkModeChanged: (bool isDarkMode) {
+                              // Handle dark mode change if needed
+                              setState(() {
+                                _isDarkModeEnabled = isDarkMode;
+                              });
+                            },
+                          )));
                         },
                         height: 50,
                         color: Colors.orange[900],
