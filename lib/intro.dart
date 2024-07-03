@@ -16,8 +16,15 @@ class _introState extends State<intro> {
       Navigator.of(context).pushReplacementNamed('/home');
     });
     return Scaffold(
-      body: Center(
-        child: Image.asset('assets/J.gif'), // Your splash screen image
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/J.gif'),
+            fit: BoxFit.cover, // Ensures the image covers the entire screen
+          ),
+        ),
       ),
     );
   }

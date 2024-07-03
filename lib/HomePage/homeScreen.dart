@@ -5,6 +5,7 @@ import 'package:jan_bahon/HomePage/filter.dart';
 
 import '../Screens/log_in.dart';
 import 'BusOptions.dart';
+import 'lib/liveTrackMap.dart';
 
 class homeS extends StatefulWidget {
   const homeS({super.key});
@@ -58,8 +59,8 @@ class _State extends State<homeS> {
   }
   static List<Widget> _widgetOptions1 = <Widget>[
     homeS(),
-    //MapS(),
-    // QrCode(),
+    LiveTracking(),
+   // QrCode(),
   ];
   void _onItemTapped(int index1) {
     setState(() {
