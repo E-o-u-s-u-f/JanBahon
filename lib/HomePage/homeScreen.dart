@@ -7,9 +7,10 @@ import 'package:jan_bahon/HomePage/QRviewAuth.dart';
 
 import '../Screens/log_in.dart';
 import 'BusOptions.dart';
-//import 'Contact.dart';
+import 'Contact.dart';
 import 'MapViewAuth.dart';
-//import 'Settings.dart';
+import 'Settings.dart';
+import 'help.dart';
 import 'liveTrackMap.dart';
 
 
@@ -394,7 +395,7 @@ class _State extends State<homeS> {
               child: ListTile(
                 title: Text('Settings'),
                 onTap: () {
-                  //Navigator.push(context, MaterialPageRoute(builder: (context) => settingsScreen()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => settingsScreen()));
                 },
               ),
             ),
@@ -405,7 +406,7 @@ class _State extends State<homeS> {
               child: ListTile(
                 title: Text('Help'),
                 onTap: () {
-                  //Navigator.push(context, MaterialPageRoute(builder: (context) => HelpPage()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => HelpPage()));
                 },
               ),
             ),
@@ -416,7 +417,7 @@ class _State extends State<homeS> {
               child: ListTile(
                 title: Text('Contact'),
                 onTap: () {
-                 // Navigator.push(context, MaterialPageRoute(builder: (context) => ContactPage()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ContactPage()));
                 },
               ),
             ),
