@@ -1,9 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
-import 'lib/pdf_page.dart';
+//import 'PaymentOption.dart';
+import 'pdf_page.dart';
 
 class BusSeatSelection extends StatefulWidget {
   final String FROM;
@@ -20,7 +19,6 @@ class BusSeatSelection extends StatefulWidget {
     required this.date,
     required this.no,
     required this.description,
-
   });
 
   @override
@@ -34,6 +32,9 @@ class _BusSeatSelectionState extends State<BusSeatSelection> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   List<int> _reservedSeats = [];
   String? _documentId;
+  double _totalPayment = 0.0;
+  final double seatPrice = 1000.0;
+
   @override
   void initState() {
     super.initState();
@@ -41,7 +42,6 @@ class _BusSeatSelectionState extends State<BusSeatSelection> {
   }
 
   Future<void> _fetchReservedSeats() async {
-    // Fetch the document ID for the specific transport instance
     QuerySnapshot querySnapshot = await _firestore
         .collection(widget.description)
         .where('FROM', isEqualTo: widget.FROM)
@@ -78,183 +78,202 @@ class _BusSeatSelectionState extends State<BusSeatSelection> {
       }, SetOptions(merge: true));
 
       // Update transport document with reserved seats
-      DocumentReference transportRef = _firestore.collection(widget.description).doc(_documentId);
-      batch.update(transportRef, {
-        'reservedSeats': FieldValue.arrayUnion(_selectedSeats.toList()),
-      });
+      if (_documentId != null) {
+        DocumentReference transportRef = _firestore.collection(widget.description).doc(_documentId);
+        batch.update(transportRef, {
+          'reservedSeats': FieldValue.arrayUnion(_selectedSeats.toList()),
+        });
 
-      // Commit the batch
-      await batch.commit();
+        // Commit the batch
+        await batch.commit();
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text("Select seat"),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          color: Colors.black,
-        ),
-        backgroundColor: Colors.grey[200],
-        elevation: 0,
-        foregroundColor: Colors.black,
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Container(
-                  height: 40,
-                  width: 40,
-                  decoration: BoxDecoration(
-                    color: Colors.green,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-                Text("Booked"),
-                Container(
-                  height: 40,
-                  width: 40,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Center(
-                    child: Icon(
-                      Icons.add,
-                    ),
-                  ),
-                ),
-                Text("Vacant"),
-              ],
-            ),
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text("Select seat"),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            color: Colors.black,
           ),
-          Expanded(
-            child: Stack(
-              children: [
-                Positioned(
-                  top: 50,
-                  left: 60,
-                  child: Card(
-                    elevation: 10,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+          backgroundColor: Colors.grey[200],
+          elevation: 0,
+          foregroundColor: Colors.black,
+        ),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    height: 40,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.circular(4),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          for (int i = 0; i < 9; i++)
+                  ),
+                  Text("Booked"),
+                  Container(
+                    height: 40,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.add,
+                      ),
+                    ),
+                  ),
+                  Text("Vacant"),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: 10,
+                    left: 60,
+                    child: Card(
+                      elevation: 10,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            for (int i = 0; i < 9; i++)
+                              Row(
+                                children: [
+                                  for (int j = 0; j < 2; j++)
+                                    _seatLayout(i * 4 + j + 1),
+                                  SizedBox(
+                                    width: 47,
+                                  ),
+                                  for (int j = 2; j < 4; j++)
+                                    _seatLayout(i * 4 + j + 1),
+                                ],
+                              ),
+                            // Last row with an extra seat in the gap
                             Row(
                               children: [
-                                for (int j = 0; j < 2; j++)
-                                  _seatLayout(i * 4 + j + 1),
-                                SizedBox(
-                                  width: 47,
-                                ),
-                                for (int j = 2; j < 4; j++)
-                                  _seatLayout(i * 4 + j + 1),
+                                _seatLayout(37),
+                                _seatLayout(38),
+                                _seatLayout(39), // Extra seat in the gap
+                                _seatLayout(40),
+                                _seatLayout(41),
                               ],
                             ),
-                          // Last row with an extra seat in the gap
-                          Row(
-                            children: [
-                              _seatLayout(37),
-                              _seatLayout(38),
-                              _seatLayout(39), // Extra seat in the gap
-                              _seatLayout(40),
-                              _seatLayout(41),
-                            ],
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
-      bottomNavigationBar: SizedBox(
-        height: 84,
-        child: BottomAppBar(
-          elevation: 64,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            child: Row(
-              children: [
-                Text("Seat: ${_selectedSeats.length}/41"),
-                SizedBox(
-                  width: 24,
-                ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: _isAnySeatSelected
-                        ? () async {
-                      await _reserveSeats();
-                      setState(() {
-                        _reservedSeats.addAll(_selectedSeats);
-                        _selectedSeats.clear();
-                        _isAnySeatSelected = false;
-                      });
-
-                    }
-                        : null,
-                    child: Container(
-                      height: 54,
-                      decoration: BoxDecoration(
-                        color: _isAnySeatSelected
-                            ? Colors.red
-                            : Colors.amberAccent,
-                        borderRadius: BorderRadius.circular(32),
+          ],
+        ),
+        bottomNavigationBar: SizedBox(
+          height: 130,
+          child: BottomAppBar(
+            elevation: 64,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 15,
                       ),
-                      child: Center(
-                        child: TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PDFPage(
-                                  selectedSeats: _selectedSeats,
-                                  FROM: widget.FROM,
-                                  TO: widget.TO,
-                                  Time: widget.Time,
-                                  date: widget.date,
-                                  no: widget.no,
-                                  description: widget.description,
+                      Text(
+                        "Seat: ${_selectedSeats.length}/41",
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        width: 120,
+                      ),
+                      Text(
+                        "Total Payment: \$${_totalPayment.toStringAsFixed(2)}",
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: _isAnySeatSelected
+                          ? () async {
+                        await _reserveSeats();
+                        setState(() {
+                          _reservedSeats.addAll(_selectedSeats);
+                          _selectedSeats.clear();
+                          _isAnySeatSelected = false;
+                          _totalPayment = 0.0;
+                        });
+                      }
+                          : null,
+                      child: Container(
+                        height: 20,
+                        decoration: BoxDecoration(
+                          color: _isAnySeatSelected ? Colors.red : Colors.amberAccent,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Center(
+                          child: TextButton(
+                            onPressed: _isAnySeatSelected
+                                ? () {
+                              /* Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                builder: (context) => Payment(
+                                    totalPayment: _selectedSeats.length * 1000.0,
+                                    selectedSeats: _selectedSeats,
+                                    FROM: widget.FROM,
+                                    TO: widget.TO,
+                                    Time: widget.Time,
+                                    date: widget.date,
+                                    no: widget.no,
+                                    description: widget.description,
+                                  ),
                                 ),
+                              );*/
+                            }
+                                : null,
+
+                            child: Text(
+                              "Confirm",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
                               ),
-                            );
-                          },
-                          child: Text(
-                            "Confirm",
-                            style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
                             ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   Widget _seatLayout(int seatNumber) {
@@ -267,8 +286,10 @@ class _BusSeatSelectionState extends State<BusSeatSelection> {
         setState(() {
           if (isSelected) {
             _selectedSeats.remove(seatNumber);
+            _totalPayment -= seatPrice;
           } else {
             _selectedSeats.add(seatNumber);
+            _totalPayment += seatPrice;
           }
           _isAnySeatSelected = _selectedSeats.isNotEmpty;
         });

@@ -1,11 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:jan_bahon/HomePage/filter.dart';
+import 'package:jan_bahon/HomePage/QRviewAuth.dart';
+//import 'package:jan_bahon/HomePage/filter.dart';
+//import 'package:jan_bahon/HomePage/help.dart';
 
 import '../Screens/log_in.dart';
 import 'BusOptions.dart';
-import 'lib/liveTrackMap.dart';
+//import 'Contact.dart';
+import 'MapViewAuth.dart';
+//import 'Settings.dart';
+import 'liveTrackMap.dart';
+
 
 class homeS extends StatefulWidget {
   const homeS({super.key});
@@ -59,14 +65,10 @@ class _State extends State<homeS> {
   }
   static List<Widget> _widgetOptions1 = <Widget>[
     homeS(),
-    LiveTracking(),
-   // QrCode(),
+    MapviewAccessPage(),
+    QRviewAccessPage(),
   ];
-  void _onItemTapped(int index1) {
-    setState(() {
-      selInd = index1;
-    });
-  }
+
   void _onIconTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -114,7 +116,7 @@ class _State extends State<homeS> {
                     child: Center(
                       child: TextButton(
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) =>Filtered()));
+                          //Navigator.push(context, MaterialPageRoute(builder: (context) =>Filtered()));
                         },
                         child: const Text('Click here to search', style: TextStyle(fontSize: 18, color: Colors.grey)),
                       ),
@@ -165,7 +167,7 @@ class _State extends State<homeS> {
                     child: Center(
                       child: TextButton(
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) =>Filtered()));
+                          //Navigator.push(context, MaterialPageRoute(builder: (context) =>Filtered()));
                         },
                         child: const Text('Click here to search', style: TextStyle(fontSize: 18, color: Colors.black12)),
                       ),
@@ -216,7 +218,7 @@ class _State extends State<homeS> {
                     child: Center(
                       child: TextButton(
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) =>Filtered()));
+                          //Navigator.push(context, MaterialPageRoute(builder: (context) =>Filtered()));
                         },
                         child: const Text('Click here to search', style: TextStyle(fontSize: 18, color: Colors.grey)),
                       ),
@@ -376,11 +378,24 @@ class _State extends State<homeS> {
             ),
             Container(
               decoration: BoxDecoration(
+                border: Border(bottom: BorderSide(color: Colors.grey, width: .8)),
+              ),
+              child: ListTile(
+                title: Text('Map'),
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => LiveTracking()));
+                },
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
                 border: Border(bottom: BorderSide(color: Colors.grey, width: .9)),
               ),
               child: ListTile(
                 title: Text('Settings'),
-                onTap: () {},
+                onTap: () {
+                  //Navigator.push(context, MaterialPageRoute(builder: (context) => settingsScreen()));
+                },
               ),
             ),
             Container(
@@ -389,7 +404,9 @@ class _State extends State<homeS> {
               ),
               child: ListTile(
                 title: Text('Help'),
-                onTap: () {},
+                onTap: () {
+                  //Navigator.push(context, MaterialPageRoute(builder: (context) => HelpPage()));
+                },
               ),
             ),
             Container(
@@ -398,7 +415,9 @@ class _State extends State<homeS> {
               ),
               child: ListTile(
                 title: Text('Contact'),
-                onTap: () {},
+                onTap: () {
+                 // Navigator.push(context, MaterialPageRoute(builder: (context) => ContactPage()));
+                },
               ),
             ),
             Container(
@@ -422,17 +441,25 @@ class _State extends State<homeS> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.qr_code_2),
-            label: 'QR code',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.camera),
             label: 'Map',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.qr_code_2),
+            label: 'QR Code',
           ),
         ],
         currentIndex: selInd,
         selectedItemColor: Colors.purple,
-        onTap: _onItemTapped,
+        onTap: (index) {
+          setState(() {
+            selInd = index;
+          });
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => _widgetOptions1[index]),
+          );
+        },
       ),
     );
   }

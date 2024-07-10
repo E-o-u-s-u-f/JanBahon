@@ -6,7 +6,10 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:uuid/uuid.dart';
-import '../QRcode.dart';
+import 'QRcode.dart';
+//import 'PaymentOption.dart';
+import 'homeScreen.dart';
+import 'dart:math';
 
 class PDFPage extends StatefulWidget {
   final Set<int> selectedSeats;
@@ -40,7 +43,8 @@ class _PDFPageState extends State<PDFPage> {
 
   Future<void> _generatePdfAndUpload() async {
     final pdf = pw.Document();
-    final uniqueId = Uuid().v4();
+    final random = Random();
+    final uniqueId = (random.nextInt(900000) + 100000).toString();
     final name = _nameController.text;
     final email = _emailController.text;
     final selectedSeats = widget.selectedSeats.toList();
@@ -49,8 +53,6 @@ class _PDFPageState extends State<PDFPage> {
     final TO = widget.TO;
     final Time = widget.Time;
     final date = widget.date;
-
-    final seatNumbers = selectedSeats.join(', '); // Join seat numbers into a single string
 
     pdf.addPage(
       pw.Page(
@@ -99,6 +101,13 @@ class _PDFPageState extends State<PDFPage> {
               ),
               pw.Text(
                 ' TIME: $Time',
+                style: pw.TextStyle(
+                  fontSize: 16,
+                  color: PdfColors.black,
+                ),
+              ),
+              pw.Text(
+                'PassNum : $uniqueId',
                 style: pw.TextStyle(
                   fontSize: 16,
                   color: PdfColors.black,
@@ -154,12 +163,9 @@ class _PDFPageState extends State<PDFPage> {
 
       // Get the download URL
       final pdfUrl = await storageRef.getDownloadURL();
-      setState(() {
-        _pdfUrl = pdfUrl;
-      });
 
-      // Store the URL in Firestore
-      await _firestore.collection('users').add({
+      // Store the URL and data in Firestore with custom document ID
+      await _firestore.doc('users/$uniqueId').set({
         'name': name,
         'email': email,
         'pdfUrl': pdfUrl,
@@ -173,6 +179,9 @@ class _PDFPageState extends State<PDFPage> {
         'timestamp': FieldValue.serverTimestamp(),
       });
 
+      setState(() {
+        _pdfUrl = pdfUrl;
+      });
 
       print("PDF successfully uploaded and Firestore document created");
 
@@ -189,6 +198,15 @@ class _PDFPageState extends State<PDFPage> {
         SnackBar(content: Text('Error generating or uploading PDF: $e')),
       );
     }
+  }
+
+  void _proceedToPayment() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => homeS(),
+      ),
+    );
   }
 
   @override
@@ -226,6 +244,11 @@ class _PDFPageState extends State<PDFPage> {
             ElevatedButton(
               onPressed: _generatePdfAndUpload,
               child: Text('Generate your ticket and QR Code'),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _proceedToPayment,
+              child: Text('Back'),
             ),
           ],
         ),

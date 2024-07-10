@@ -1,12 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:jan_bahon/HomePage/QRcode.dart';
 import 'package:jan_bahon/HomePage/homeScreen.dart';
-import 'package:jan_bahon/HomePage/lib/liveTrackMap.dart';
-import 'package:jan_bahon/HomePage/lib/pdf_page.dart';
 import 'package:jan_bahon/firebase_options.dart';
-//import 'package:jan_bahon/splashscreen.dart';
 import 'HomePage/bus_seat_selection.dart';
 import 'Screens/reg_in.dart';
 import 'Screens/log_in.dart';
@@ -15,6 +11,7 @@ import 'HomePage/BusOptions.dart';
 import 'intro.dart';
 
 void main() async {
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
@@ -30,7 +27,6 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
