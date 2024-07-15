@@ -7,7 +7,8 @@ import 'package:jan_bahon/HomePage/QRviewAuth.dart';
 
 import '../Screens/log_in.dart';
 import 'BusOptions.dart';
-//import 'Car Hire options.dart';
+
+import 'CarHiring.dart';
 import 'Contact.dart';
 import 'MapViewAuth.dart';
 import 'Settings.dart';
@@ -419,6 +420,16 @@ class _State extends State<homeS> {
                 title: Text('Contact'),
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => ContactPage()));
+                },
+              ),
+            ),Container(
+              decoration: BoxDecoration(
+                border: Border(bottom: BorderSide(color: Colors.grey, width: .8)),
+              ),
+              child: ListTile(
+                title: Text('Car Hiring'),
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => HiringCars()));
                 },
               ),
             ),
