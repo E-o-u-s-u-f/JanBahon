@@ -7,6 +7,7 @@ import 'package:jan_bahon/HomePage/QRviewAuth.dart';
 
 import '../Screens/log_in.dart';
 import 'BusOptions.dart';
+//import 'Car Hire options.dart';
 import 'Contact.dart';
 import 'MapViewAuth.dart';
 import 'Settings.dart';
@@ -395,7 +396,7 @@ class _State extends State<homeS> {
               child: ListTile(
                 title: Text('Settings'),
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => settingsScreen()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) =>  settingsScreen()));
                 },
               ),
             ),
