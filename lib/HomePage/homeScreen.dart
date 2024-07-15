@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:jan_bahon/HomePage/Filter.dart';
 import 'package:jan_bahon/HomePage/QRviewAuth.dart';
 //import 'package:jan_bahon/HomePage/filter.dart';
 //import 'package:jan_bahon/HomePage/help.dart';
@@ -119,7 +120,7 @@ class _State extends State<homeS> {
                     child: Center(
                       child: TextButton(
                         onPressed: () {
-                          //Navigator.push(context, MaterialPageRoute(builder: (context) =>Filtered()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) =>BusOption()));
                         },
                         child: const Text('Click here to search', style: TextStyle(fontSize: 18, color: Colors.grey)),
                       ),

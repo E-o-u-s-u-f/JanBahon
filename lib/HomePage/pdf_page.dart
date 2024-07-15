@@ -7,7 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:uuid/uuid.dart';
 import 'QRcode.dart';
-//import 'PaymentOption.dart';
+import 'PaymentOption.dart';
 import 'homeScreen.dart';
 import 'dart:math';
 

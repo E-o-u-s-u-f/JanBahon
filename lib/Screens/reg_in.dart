@@ -40,7 +40,7 @@ class _regScreenState extends State<regScreen> {
         await userCredential.user!.updateDisplayName(_fullNameController.text);
 
         // Store additional user information in Firestore
-        await _firestore.collection('users').doc(userCredential.user!.uid).set({
+        await _firestore.collection("users").doc(userCredential.user!.uid).set({
           'fullName': _fullNameController.text,
           'email': _emailController.text,
           'createdAt': FieldValue.serverTimestamp(),
