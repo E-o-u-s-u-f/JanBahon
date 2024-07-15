@@ -2,40 +2,41 @@ import 'package:flutter/material.dart';
 
 import 'bus_seat_selection.dart';
 
-Widget buildBoxB(BuildContext context, String FROM, String FROM1, String TO, String TO1, String date, String time, String no,int cur) {
-  String description= "Bus";
+Widget buildBoxB(BuildContext context, String FROM, String FROM1, String TO,
+    String TO1, String date, String time, String no, int cur, String money) {
+  String description = "Bus";
   IconData getIcon(int cur) {
-
     switch (cur) {
       case 0:
-        description= "Bus";
+        description = "Bus";
         return Icons.airport_shuttle; // Bus icon
       case 1:
-        description ="Train";
+        description = "Train";
         return Icons.train; // Train icon
       case 2:
         description = "Airplane";
-        return Icons.airplanemode_active;// Airplane icon
+        return Icons.airplanemode_active; // Airplane icon
       default:
         description = "Bus";
         return Icons.directions_bus; // Default icon (bus)
     }
   }
+
   IconData icon = getIcon(cur);
   return InkWell(
     onTap: () {
       // Handle tap event here
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => BusSeatSelection(
-          FROM: FROM,
-          TO: TO,
-          Time: time,
-          date: date,
-          no: no,
-          description: description,
-
-        )
+        MaterialPageRoute(
+          builder: (context) => BusSeatSelection(
+            FROM: FROM,
+            TO: TO,
+            Time: time,
+            date: date,
+            no: no,
+            description: description,
+          ),
         ),
       );
     },
@@ -74,7 +75,15 @@ Widget buildBoxB(BuildContext context, String FROM, String FROM1, String TO, Str
                   ],
                 ),
               ),
-              Icon(icon, size: 32,),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(icon, size: 32),
+                    Text(no),
+                  ],
+                ),
+              ),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -110,8 +119,14 @@ Widget buildBoxB(BuildContext context, String FROM, String FROM1, String TO, Str
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text('Bus', style: TextStyle(color: Colors.grey)),
-                    Text(no),
+                    Text('Ammount', style: TextStyle(color: Colors.grey)),
+                    Text(
+                         '$money ৳' ,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                         ),
+                      ),
                   ],
                 ),
               ),
@@ -131,4 +146,3 @@ Widget buildBoxB(BuildContext context, String FROM, String FROM1, String TO, Str
     ),
   );
 }
-
