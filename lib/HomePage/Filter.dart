@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'BusOptions.dart';
 import 'bus_seat_selection.dart';
 
 class BusOption extends StatefulWidget {
@@ -82,7 +83,8 @@ class _BusOptionState extends State<BusOption> {
                 onChanged: (String? newValue) {
                   setState(() {
                     selectedFrom = newValue;
-                    selectedTo = null; // Reset selectedTo when selectedFrom changes
+                    selectedTo =
+                    null; // Reset selectedTo when selectedFrom changes
                   });
                 },
               ),
@@ -97,7 +99,9 @@ class _BusOptionState extends State<BusOption> {
                   ),
                 ),
                 value: selectedTo,
-                items: locations.where((location) => location != selectedFrom).map((String location) {
+                items: locations
+                    .where((location) => location != selectedFrom)
+                    .map((String location) {
                   return DropdownMenuItem<String>(
                     value: location,
                     child: Text(location),
@@ -124,7 +128,8 @@ class _BusOptionState extends State<BusOption> {
                 controller: TextEditingController(
                   text: selectedDate == null
                       ? ''
-                      : '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}',
+                      : '${selectedDate!.day}/${selectedDate!
+                      .month}/${selectedDate!.year}',
                 ),
               ),
               SizedBox(height: 16.0),
@@ -182,6 +187,7 @@ class _BusOptionState extends State<BusOption> {
                           "time": doc['time'],
                           "no": doc['no'],
                           "location": doc['location'],
+                          "Fair": doc['Fair'],
                         };
                       }).toList();
 
@@ -227,15 +233,17 @@ class _BusOptionState extends State<BusOption> {
               SizedBox(height: 16.0),
               Column(
                 children: filteredOptions.map((option) {
-                  return buildBox(
-                    context,
-                    option["FROM"]!,
-                    option["FROM1"]!,
-                    option["TO"]!,
-                    option["TO1"]!,
-                    option["Date"]!,
-                    option["time"]!,
-                    option["no"]!,
+                  return buildBoxB(
+                      context,
+                      option["FROM"]!,
+                      option["FROM1"]!,
+                      option["TO"]!,
+                      option["TO1"]!,
+                      option["Date"]!,
+                      option["time"]!,
+                      option["no"]!,
+                      0,
+                      option["Fair"]!
                   );
                 }).toList(),
               ),
@@ -246,137 +254,4 @@ class _BusOptionState extends State<BusOption> {
     );
   }
 
-  Widget buildBox(BuildContext context, String FROM, String FROM1, String TO, String TO1, String date, String time, String no) {
-    String description = "Bus";
-    IconData getIcon(int cur) {
-      switch (cur) {
-        case 0:
-          description = "Bus";
-          return Icons.airport_shuttle; // Bus icon
-        case 1:
-          description = "Train";
-          return Icons.train; // Train icon
-        case 2:
-          description = "Airplane";
-          return Icons.airplanemode_active; // Airplane icon
-        default:
-          description = "Bus";
-          return Icons.directions_bus; // Default icon (bus)
-      }
-    }
-
-    IconData icon = getIcon(0); // Assuming cur = 0 for now
-
-    return InkWell(
-      onTap: () {
-        // Handle tap event here
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => BusSeatSelection(
-              FROM: FROM,
-              TO: TO,
-              Time: time,
-              date: date,
-              no: no,
-              description: description,
-            ),
-          ),
-        );
-      },
-      child: Container(
-        margin: EdgeInsets.all(16.0),
-        padding: EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 2,
-              blurRadius: 5,
-              offset: Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        FROM,
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(FROM1),
-                    ],
-                  ),
-                ),
-                Icon(
-                  icon,
-                  size: 32,
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        TO,
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(TO1),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 16.0),
-            Divider(thickness: 1, color: Colors.grey),
-            SizedBox(height: 16.0),
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Date', style: TextStyle(color: Colors.grey)),
-                      Text(date),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text('Bus', style: TextStyle(color: Colors.grey)),
-                      Text(no),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text('Time', style: TextStyle(color: Colors.grey)),
-                      Text(time),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

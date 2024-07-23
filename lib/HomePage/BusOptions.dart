@@ -36,6 +36,7 @@ Widget buildBoxB(BuildContext context, String FROM, String FROM1, String TO,
             date: date,
             no: no,
             description: description,
+            Fair: money,
           ),
         ),
       );

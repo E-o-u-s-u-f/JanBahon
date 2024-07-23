@@ -25,7 +25,7 @@ class BusSeatSelection extends StatefulWidget {
   final String date;
   final String no;
   final String description;
-
+  final String Fair;
   BusSeatSelection({
     required this.FROM,
     required this.TO,
@@ -33,6 +33,7 @@ class BusSeatSelection extends StatefulWidget {
     required this.date,
     required this.no,
     required this.description,
+    required this.Fair
   });
 
   @override
@@ -46,12 +47,13 @@ class _BusSeatSelectionState extends State<BusSeatSelection> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   List<int> _reservedSeats = [];
   String? _documentId;
-  double _totalPayment = 0.0;
-  final double seatPrice = 1000.0;
+  int _totalPayment = 0;
+  late int seatPrice;
 
   @override
   void initState() {
     super.initState();
+    seatPrice = int.parse(widget.Fair);
     _fetchReservedSeats();
   }
 
@@ -248,12 +250,12 @@ class _BusSeatSelectionState extends State<BusSeatSelection> {
                         _reservedSeats.addAll(_selectedSeats);
                         _selectedSeats.clear();
                         _isAnySeatSelected = false;
-                        _totalPayment = 0.0;
+                        _totalPayment = 0;
                       });
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Payment(totalPayment: _totalPayment, selectedSeats:_selectedSeats,FROM: widget.FROM, TO: widget.TO, Time: widget.Time, date: widget.Time, no: widget.no, description: widget.description,),
+                          builder: (context) => Payment(totalPayment: _totalPayment, selectedSeats: _selectedSeats, FROM: widget.FROM, TO: widget.TO, Time: widget.Time, date: widget.Time, no: widget.no, description: widget.description),
                         ),
                       );
                     }
@@ -271,7 +273,7 @@ class _BusSeatSelectionState extends State<BusSeatSelection> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => Payment(totalPayment: _totalPayment,selectedSeats:_selectedSeats, FROM: widget.FROM, TO: widget.TO, Time: widget.Time, date: widget.Time, no: widget.no, description: widget.description,),
+                                builder: (context) => Payment(totalPayment: _totalPayment, selectedSeats: _selectedSeats, FROM: widget.FROM, TO: widget.TO, Time: widget.Time, date: widget.Time, no: widget.no, description: widget.description),
                               ),
                             );
                           }

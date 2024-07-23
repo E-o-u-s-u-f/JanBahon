@@ -13,6 +13,7 @@ import 'CarHiring.dart';
 import 'Contact.dart';
 import 'MapViewAuth.dart';
 import 'Settings.dart';
+import 'chat_screen.dart';
 import 'help.dart';
 import 'liveTrackMap.dart';
 
@@ -277,6 +278,7 @@ class _State extends State<homeS> {
         backgroundColor: Colors.black,
       ),
       body: Center(
+
         child: Column(
           children: <Widget>[
             Row(
@@ -362,6 +364,16 @@ class _State extends State<homeS> {
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ChatScreen()),
+          );
+        },
+        child: Icon(Icons.message),
+        tooltip: 'Go to Chat',
       ),
       drawer: Drawer(
         child: ListView(
@@ -480,4 +492,5 @@ class _State extends State<homeS> {
       ),
     );
   }
+
 }

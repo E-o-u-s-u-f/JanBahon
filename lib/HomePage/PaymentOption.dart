@@ -3,7 +3,7 @@ import 'package:jan_bahon/HomePage/homeScreen.dart';
 import 'package:jan_bahon/HomePage/pdf_page.dart';
 
 class Payment extends StatefulWidget {
-  final double totalPayment;
+  final int totalPayment;
   final Set<int> selectedSeats;
   final String FROM;
   final String TO;
@@ -11,6 +11,7 @@ class Payment extends StatefulWidget {
   final String date;
   final String no;
   final String description;
+
   Payment({
     required this.totalPayment,
     required this.selectedSeats,
