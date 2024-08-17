@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'bus_seat_selection.dart';
 
 Widget buildBoxB(BuildContext context, String FROM, String FROM1, String TO, String TO1, String date, String time, String no,int cur) {
-  String description= "Bus";
+  String description="";
   IconData getIcon(int cur) {
 
     switch (cur) {
@@ -110,7 +110,7 @@ Widget buildBoxB(BuildContext context, String FROM, String FROM1, String TO, Str
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text('Bus', style: TextStyle(color: Colors.grey)),
+                    Text(cur==0?'Bus':cur==1?'Train':'Airplane', style: TextStyle(color: Colors.grey)),
                     Text(no),
                   ],
                 ),

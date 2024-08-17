@@ -2,10 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'bus_seat_selection.dart';
+//import 'BusOptions'.dart';
 
 class BusOption extends StatefulWidget {
-  const BusOption({super.key});
-
+  final int cur;
+  const BusOption({super.key,required this.cur});
   @override
   State<BusOption> createState() => _BusOptionState();
 }
@@ -15,7 +16,6 @@ class _BusOptionState extends State<BusOption> {
   String? selectedTo;
   String? formattedDate;
   DateTime? selectedDate;
-
   final List<String> locations = [
     'Dhaka',
     'Rajshahi',
@@ -165,7 +165,7 @@ class _BusOptionState extends State<BusOption> {
 
                     QuerySnapshot querySnapshot = await FirebaseFirestore
                         .instance
-                        .collection("Bus")
+                        .collection(widget.cur==0?"Bus":widget.cur==1?"Train":"Airplane")
                         .where('Date', isEqualTo: formattedDate)
                         .where('FROM1', isEqualTo: selectedFrom)
                         .where('TO1', isEqualTo: selectedTo)
@@ -181,7 +181,7 @@ class _BusOptionState extends State<BusOption> {
                           "Date": doc['Date'],
                           "time": doc['time'],
                           "no": doc['no'],
-                          "location": doc['location'],
+                          //"location": doc['location'],
                         };
                       }).toList();
 
@@ -236,6 +236,7 @@ class _BusOptionState extends State<BusOption> {
                     option["Date"]!,
                     option["time"]!,
                     option["no"]!,
+                    widget.cur,
                   );
                 }).toList(),
               ),
@@ -246,8 +247,8 @@ class _BusOptionState extends State<BusOption> {
     );
   }
 
-  Widget buildBox(BuildContext context, String FROM, String FROM1, String TO, String TO1, String date, String time, String no) {
-    String description = "Bus";
+  Widget buildBox(BuildContext context, String FROM, String FROM1, String TO, String TO1, String date, String time, String no,int cur) {
+    String description = "";
     IconData getIcon(int cur) {
       switch (cur) {
         case 0:
@@ -265,8 +266,12 @@ class _BusOptionState extends State<BusOption> {
       }
     }
 
-    IconData icon = getIcon(0); // Assuming cur = 0 for now
-
+    IconData icon = getIcon(cur); // Assuming cur = 0 for now
+    print("Current cur value: $cur");
+    print(FROM);
+    print(TO);
+    print(description);
+    print(date);
     return InkWell(
       onTap: () {
         // Handle tap event here
@@ -358,7 +363,7 @@ class _BusOptionState extends State<BusOption> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text('Bus', style: TextStyle(color: Colors.grey)),
+                      Text(cur==0?'Bus':cur==1?'Train':'Airplane', style: TextStyle(color: Colors.grey)),
                       Text(no),
                     ],
                   ),

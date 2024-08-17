@@ -1,9 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'PaymentOption.dart';
 
-// Placeholder for PaymentOption page
 class PaymentOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,7 @@ class BusSeatSelection extends StatefulWidget {
 }
 
 class _BusSeatSelectionState extends State<BusSeatSelection> {
-  final Set<int> _selectedSeats = {};
+  Set<int> _selectedSeats = {};
   bool _isAnySeatSelected = false;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -52,53 +52,91 @@ class _BusSeatSelectionState extends State<BusSeatSelection> {
   @override
   void initState() {
     super.initState();
+    print("FROM: ${widget.FROM}");
+    print("TO: ${widget.TO}");
+    print("Time: ${widget.Time}");
+    print("Date: ${widget.date}");
+    print("Number: ${widget.no}");
+    print("Description: ${widget.description}");
     _fetchReservedSeats();
   }
 
   Future<void> _fetchReservedSeats() async {
+    if (kDebugMode) {
+      print('entered fetchReserved');
+    }
     QuerySnapshot querySnapshot = await _firestore
-        .collection("BusSeats")
+        .collection(_getCollectionName())
         .where('FROM', isEqualTo: widget.FROM)
         .where('TO', isEqualTo: widget.TO)
         .where('Time', isEqualTo: widget.Time)
         .where('date', isEqualTo: widget.date)
         .where('no', isEqualTo: widget.no)
         .get();
+    for (var doc in querySnapshot.docs) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      if (kDebugMode) {
+        print("Document ID: ${doc.id}");
+      }
+      if (kDebugMode) {
+        print("FROM: ${data['FROM']}");
+      }
+      if (kDebugMode) {
+        print("TO: ${data['TO']}");
+      }
+      if (kDebugMode) {
+        print("Time: ${data['Time']}");
+      }
+      if (kDebugMode) {
+        print("Date: ${data['date']}");
+      }
+      if (kDebugMode) {
+        print("No: ${data['no']}");
+      }
+      if (kDebugMode) {
+        print("---------");
+      } // Separator between documents
+    }
 
     if (querySnapshot.docs.isNotEmpty) {
       DocumentSnapshot doc = querySnapshot.docs.first;
       setState(() {
         _documentId = doc.id;
       });
+      if (kDebugMode) {
+        print(_documentId);
+      }
 
       final data = doc.data() as Map<String, dynamic>?;
       if (data != null && data.containsKey('reservedSeats')) {
         setState(() {
           _reservedSeats = List<int>.from(data['reservedSeats']);
         });
+        if (kDebugMode) {
+          print("Reserved Seats: ${_reservedSeats.toList()}");
+        }
       }
     }
   }
 
   Future<void> _reserveSeats() async {
+    if (kDebugMode) {
+      print('entered Reserved');
+    }
     final user = _auth.currentUser;
     if (user != null) {
       WriteBatch batch = _firestore.batch();
-
-      // Update user document with reserved seats
       DocumentReference userRef = _firestore.collection("users").doc(user.uid);
       batch.set(userRef, {
         'reservedSeats': _selectedSeats.toList(),
       }, SetOptions(merge: true));
-
-      // Update transport document with reserved seats
       if (_documentId != null) {
-        DocumentReference transportRef = _firestore.collection("BusSeats").doc(_documentId);
+        DocumentReference transportRef = _firestore.collection(_getCollectionName()).doc(_documentId!);
         batch.update(transportRef, {
           'reservedSeats': FieldValue.arrayUnion(_selectedSeats.toList()),
         });
       } else {
-        DocumentReference newTransportRef = _firestore.collection("BusSeats").doc();
+        DocumentReference newTransportRef = _firestore.collection(_getCollectionName()).doc();
         batch.set(newTransportRef, {
           'FROM': widget.FROM,
           'TO': widget.TO,
@@ -111,6 +149,17 @@ class _BusSeatSelectionState extends State<BusSeatSelection> {
 
       // Commit the batch
       await batch.commit();
+    }
+  }
+
+  String _getCollectionName() {
+    switch (widget.description) {
+      case "Train":
+        return "TrainSeats";
+      case "Airplane":
+        return "AirplaneSeats";
+      default:
+        return "BusSeats";
     }
   }
 
@@ -244,16 +293,19 @@ class _BusSeatSelectionState extends State<BusSeatSelection> {
                     onTap: _isAnySeatSelected
                         ? () async {
                       await _reserveSeats();
-                      setState(() {
-                        _reservedSeats.addAll(_selectedSeats);
-                        _selectedSeats.clear();
-                        _isAnySeatSelected = false;
-                        _totalPayment = 0.0;
-                      });
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Payment(totalPayment: _totalPayment, selectedSeats:_selectedSeats,FROM: widget.FROM, TO: widget.TO, Time: widget.Time, date: widget.Time, no: widget.no, description: widget.description,),
+                          builder: (context) => Payment(
+                            totalPayment: _totalPayment,
+                            selectedSeats: _selectedSeats,
+                            FROM: widget.FROM,
+                            TO: widget.TO,
+                            Time: widget.Time,
+                            date: widget.date,
+                            no: widget.no,
+                            description: widget.description,
+                          ),
                         ),
                       );
                     }
@@ -267,11 +319,21 @@ class _BusSeatSelectionState extends State<BusSeatSelection> {
                       child: Center(
                         child: TextButton(
                           onPressed: _isAnySeatSelected
-                              ? () {
+                              ? () async {
+                            await _reserveSeats();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => Payment(totalPayment: _totalPayment,selectedSeats:_selectedSeats, FROM: widget.FROM, TO: widget.TO, Time: widget.Time, date: widget.Time, no: widget.no, description: widget.description,),
+                                builder: (context) => Payment(
+                                  totalPayment: _totalPayment,
+                                  selectedSeats: _selectedSeats,
+                                  FROM: widget.FROM,
+                                  TO: widget.TO,
+                                  Time: widget.Time,
+                                  date: widget.date,
+                                  no: widget.no,
+                                  description: widget.description,
+                                ),
                               ),
                             );
                           }
@@ -314,6 +376,7 @@ class _BusSeatSelectionState extends State<BusSeatSelection> {
           }
           _isAnySeatSelected = _selectedSeats.isNotEmpty;
         });
+        print("Selected Seats: ${_selectedSeats.toList()}");
       }
           : null,
       child: Container(
