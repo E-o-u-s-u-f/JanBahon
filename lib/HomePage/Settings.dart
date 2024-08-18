@@ -53,7 +53,14 @@ class settingsScreenState extends State<settingsScreen> {
   Widget build(BuildContext context) {
     bool darkModeEnabled=false ;
 
-    return Scaffold(
+    return Container(
+        decoration:BoxDecoration(
+        gradient:LinearGradient(begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Colors.white,Colors.indigo] )),
+    child:
+    Scaffold(
+    backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text('Settings'),
       ),
@@ -112,7 +119,7 @@ class settingsScreenState extends State<settingsScreen> {
           ),
         ],
       ),
-    );
+    ));
   }
 }
 

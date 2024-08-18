@@ -1,47 +1,59 @@
 import 'package:flutter/material.dart';
-
 import 'bus_seat_selection.dart';
 
-Widget buildBoxB(BuildContext context, String FROM, String FROM1, String TO, String TO1, String date, String time, String no,int cur) {
-  String description="";
-  IconData getIcon(int cur) {
+Widget buildBoxB(
+    BuildContext context,
+    String FROM,
+    String FROM1,
+    String TO,
+    String TO1,
+    String date,
+    String time,
+    String no,
+    int cur,
+    String money,
+    ) {
+  String description = "";
 
+  IconData getIcon(int cur) {
     switch (cur) {
       case 0:
-        description= "Bus";
+        description = "Bus";
         return Icons.airport_shuttle; // Bus icon
       case 1:
-        description ="Train";
+        description = "Train";
         return Icons.train; // Train icon
       case 2:
         description = "Airplane";
-        return Icons.airplanemode_active;// Airplane icon
+        return Icons.airplanemode_active; // Airplane icon
       default:
         description = "Bus";
         return Icons.directions_bus; // Default icon (bus)
     }
   }
+
   IconData icon = getIcon(cur);
+
   return InkWell(
     onTap: () {
-      // Handle tap event here
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => BusSeatSelection(
-          FROM: FROM,
-          TO: TO,
-          Time: time,
-          date: date,
-          no: no,
-          description: description,
-
-        )
+        MaterialPageRoute(
+          builder: (context) => BusSeatSelection(
+            FROM: FROM,
+            TO: TO,
+            Time: time,
+            date: date,
+            no: no,
+            description: description,
+            Fair: money,
+          ),
         ),
       );
     },
     child: Container(
-      margin: EdgeInsets.all(16.0),
-      padding: EdgeInsets.all(16.0),
+      margin: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16.0),
@@ -65,7 +77,7 @@ Widget buildBoxB(BuildContext context, String FROM, String FROM1, String TO, Str
                   children: [
                     Text(
                       FROM,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
@@ -74,14 +86,22 @@ Widget buildBoxB(BuildContext context, String FROM, String FROM1, String TO, Str
                   ],
                 ),
               ),
-              Icon(icon, size: 32,),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(icon, size: 32),
+                    Text(no),
+                  ],
+                ),
+              ),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
                       TO,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
@@ -92,16 +112,16 @@ Widget buildBoxB(BuildContext context, String FROM, String FROM1, String TO, Str
               ),
             ],
           ),
-          SizedBox(height: 16.0),
-          Divider(thickness: 1, color: Colors.grey),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
+          const Divider(thickness: 1, color: Colors.grey),
+          const SizedBox(height: 16.0),
           Row(
             children: [
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Date', style: TextStyle(color: Colors.grey)),
+                    const Text('Date', style: TextStyle(color: Colors.grey)),
                     Text(date),
                   ],
                 ),
@@ -110,8 +130,14 @@ Widget buildBoxB(BuildContext context, String FROM, String FROM1, String TO, Str
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(cur==0?'Bus':cur==1?'Train':'Airplane', style: TextStyle(color: Colors.grey)),
-                    Text(no),
+                    const Text('Amount', style: TextStyle(color: Colors.grey)),
+                    Text(
+                      '$money ৳',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -119,7 +145,7 @@ Widget buildBoxB(BuildContext context, String FROM, String FROM1, String TO, Str
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text('Time', style: TextStyle(color: Colors.grey)),
+                    const Text('Time', style: TextStyle(color: Colors.grey)),
                     Text(time),
                   ],
                 ),
@@ -131,4 +157,3 @@ Widget buildBoxB(BuildContext context, String FROM, String FROM1, String TO, Str
     ),
   );
 }
-

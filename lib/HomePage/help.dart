@@ -13,7 +13,14 @@ class HelpPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool darkModeEnabled= false;
-    return Scaffold(
+    return Container(
+        decoration:BoxDecoration(
+            gradient:LinearGradient(begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Colors.white,Colors.indigo] )),
+        child:
+        Scaffold(
+          backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text('Help'),
         backgroundColor: darkModeEnabled ? Colors.grey[900] : Colors.blueAccent,
@@ -114,6 +121,6 @@ class HelpPage extends StatelessWidget {
           ],
         ),
       ),
-    );
+    ));
   }
 }

@@ -2,11 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'bus_seat_selection.dart';
-//import 'BusOptions'.dart';
 
 class BusOption extends StatefulWidget {
   final int cur;
-  const BusOption({super.key,required this.cur});
+
+  const BusOption({super.key, required this.cur});
+
   @override
   State<BusOption> createState() => _BusOptionState();
 }
@@ -48,21 +49,28 @@ class _BusOptionState extends State<BusOption> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
+    return Container(
+        decoration:BoxDecoration(
+            gradient:LinearGradient(begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Colors.white,Colors.indigo] )),
+        child:
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            title: const  Text(
+                'Search',
+                style: TextStyle(fontFamily: 'RobotoMono'),
+              ),
+            centerTitle: true,
+            ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              Container(
-                padding: const EdgeInsets.only(left: 3, top: 50),
-                child: Text(
-                  'Search',
-                  style: TextStyle(color: Colors.grey, fontSize: 20),
-                ),
-              ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               DropdownButtonFormField<String>(
                 decoration: InputDecoration(
                   fillColor: Colors.white54,
@@ -86,7 +94,7 @@ class _BusOptionState extends State<BusOption> {
                   });
                 },
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               DropdownButtonFormField<String>(
                 decoration: InputDecoration(
                   fillColor: Colors.white54,
@@ -97,7 +105,9 @@ class _BusOptionState extends State<BusOption> {
                   ),
                 ),
                 value: selectedTo,
-                items: locations.where((location) => location != selectedFrom).map((String location) {
+                items: locations
+                    .where((location) => location != selectedFrom)
+                    .map((String location) {
                   return DropdownMenuItem<String>(
                     value: location,
                     child: Text(location),
@@ -109,7 +119,7 @@ class _BusOptionState extends State<BusOption> {
                   });
                 },
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               TextField(
                 decoration: InputDecoration(
                   fillColor: Colors.white54,
@@ -127,7 +137,7 @@ class _BusOptionState extends State<BusOption> {
                       : '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}',
                 ),
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () async {
                   if (selectedFrom == null ||
@@ -137,14 +147,14 @@ class _BusOptionState extends State<BusOption> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text('Error'),
-                          content: Text('Please select all fields'),
+                          title: const Text('Error'),
+                          content: const Text('Please select all fields'),
                           actions: [
                             TextButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: Text('OK'),
+                              child: const Text('OK'),
                             ),
                           ],
                         );
@@ -165,7 +175,11 @@ class _BusOptionState extends State<BusOption> {
 
                     QuerySnapshot querySnapshot = await FirebaseFirestore
                         .instance
-                        .collection(widget.cur==0?"Bus":widget.cur==1?"Train":"Airplane")
+                        .collection(widget.cur == 0
+                        ? "Bus"
+                        : widget.cur == 1
+                        ? "Train"
+                        : "Airplane")
                         .where('Date', isEqualTo: formattedDate)
                         .where('FROM1', isEqualTo: selectedFrom)
                         .where('TO1', isEqualTo: selectedTo)
@@ -181,7 +195,7 @@ class _BusOptionState extends State<BusOption> {
                           "Date": doc['Date'],
                           "time": doc['time'],
                           "no": doc['no'],
-                          //"location": doc['location'],
+                          "Fair": doc['Fair'],
                         };
                       }).toList();
 
@@ -193,15 +207,15 @@ class _BusOptionState extends State<BusOption> {
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: Text('Sorry'),
-                            content: Text(
-                                'No bus found for the selected criteria.'),
+                            title: const Text('Sorry'),
+                            content: const Text(
+                                'No options found for the selected criteria.'),
                             actions: [
                               TextButton(
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: Text('OK'),
+                                child: const Text('OK'),
                               ),
                             ],
                           );
@@ -219,15 +233,15 @@ class _BusOptionState extends State<BusOption> {
                   }
                 },
                 child: isLoading
-                    ? CircularProgressIndicator(
+                    ? const CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 )
-                    : Text('Search'),
+                    : const Text('Search'),
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               Column(
                 children: filteredOptions.map((option) {
-                  return buildBox(
+                  return buildBoxB(
                     context,
                     option["FROM"]!,
                     option["FROM1"]!,
@@ -237,6 +251,7 @@ class _BusOptionState extends State<BusOption> {
                     option["time"]!,
                     option["no"]!,
                     widget.cur,
+                    option["Fair"]!,
                   );
                 }).toList(),
               ),
@@ -244,10 +259,21 @@ class _BusOptionState extends State<BusOption> {
           ),
         ),
       ),
-    );
+    ));
   }
 
-  Widget buildBox(BuildContext context, String FROM, String FROM1, String TO, String TO1, String date, String time, String no,int cur) {
+  Widget buildBoxB(
+      BuildContext context,
+      String FROM,
+      String FROM1,
+      String TO,
+      String TO1,
+      String date,
+      String time,
+      String no,
+      int cur,
+      String money,
+      ) {
     String description = "";
     IconData getIcon(int cur) {
       switch (cur) {
@@ -266,15 +292,10 @@ class _BusOptionState extends State<BusOption> {
       }
     }
 
-    IconData icon = getIcon(cur); // Assuming cur = 0 for now
-    print("Current cur value: $cur");
-    print(FROM);
-    print(TO);
-    print(description);
-    print(date);
+    IconData icon = getIcon(cur);
+
     return InkWell(
       onTap: () {
-        // Handle tap event here
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -285,13 +306,14 @@ class _BusOptionState extends State<BusOption> {
               date: date,
               no: no,
               description: description,
+              Fair: money,
             ),
           ),
         );
       },
       child: Container(
-        margin: EdgeInsets.all(16.0),
-        padding: EdgeInsets.all(16.0),
+        margin: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16.0),
@@ -300,7 +322,7 @@ class _BusOptionState extends State<BusOption> {
               color: Colors.grey.withOpacity(0.5),
               spreadRadius: 2,
               blurRadius: 5,
-              offset: Offset(0, 3),
+              offset: const Offset(0, 3),
             ),
           ],
         ),
@@ -315,7 +337,7 @@ class _BusOptionState extends State<BusOption> {
                     children: [
                       Text(
                         FROM,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                         ),
@@ -324,9 +346,14 @@ class _BusOptionState extends State<BusOption> {
                     ],
                   ),
                 ),
-                Icon(
-                  icon,
-                  size: 32,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(icon, size: 32),
+                      Text(no),
+                    ],
+                  ),
                 ),
                 Expanded(
                   child: Column(
@@ -334,7 +361,7 @@ class _BusOptionState extends State<BusOption> {
                     children: [
                       Text(
                         TO,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                         ),
@@ -345,16 +372,16 @@ class _BusOptionState extends State<BusOption> {
                 ),
               ],
             ),
-            SizedBox(height: 16.0),
-            Divider(thickness: 1, color: Colors.grey),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
+            const Divider(thickness: 1, color: Colors.grey),
+            const SizedBox(height: 16.0),
             Row(
               children: [
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Date', style: TextStyle(color: Colors.grey)),
+                      const Text('Date', style: TextStyle(color: Colors.grey)),
                       Text(date),
                     ],
                   ),
@@ -363,8 +390,8 @@ class _BusOptionState extends State<BusOption> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(cur==0?'Bus':cur==1?'Train':'Airplane', style: TextStyle(color: Colors.grey)),
-                      Text(no),
+                      Text('Fare', style: const TextStyle(color: Colors.grey)),
+                      Text('$money TK'),
                     ],
                   ),
                 ),
@@ -372,7 +399,7 @@ class _BusOptionState extends State<BusOption> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text('Time', style: TextStyle(color: Colors.grey)),
+                      const Text('Time', style: TextStyle(color: Colors.grey)),
                       Text(time),
                     ],
                   ),

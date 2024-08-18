@@ -3,7 +3,7 @@ import 'package:jan_bahon/HomePage/homeScreen.dart';
 import 'package:jan_bahon/HomePage/pdf_page.dart';
 
 class Payment extends StatefulWidget {
-  final double totalPayment;
+  final int totalPayment;
   final Set<int> selectedSeats;
   final String FROM;
   final String TO;
@@ -11,6 +11,7 @@ class Payment extends StatefulWidget {
   final String date;
   final String no;
   final String description;
+
   Payment({
     required this.totalPayment,
     required this.selectedSeats,
@@ -151,10 +152,17 @@ class _PaymentState extends State<Payment> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Container(
+        decoration:BoxDecoration(
+            gradient:LinearGradient(begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Colors.white,Colors.indigo] )),
+        child:
+        Scaffold(
+          backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text('Payment Page'),
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.transparent,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -204,7 +212,7 @@ class _PaymentState extends State<Payment> {
             ElevatedButton(
               onPressed: _loading ? null : _processPayment,
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 14.0), backgroundColor: Colors.red,
+                padding: EdgeInsets.symmetric(vertical: 14.0), backgroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12.0),
                 ),
@@ -215,12 +223,12 @@ class _PaymentState extends State<Payment> {
               )
                   : Text(
                 'Pay Now',
-                style: TextStyle(fontSize: 18.0, color: Colors.white),
+                style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold),
               ),
             ),
           ],
         ),
       ),
-    );
+    ));
   }
 }

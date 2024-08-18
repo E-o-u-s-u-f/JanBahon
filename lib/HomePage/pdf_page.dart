@@ -211,15 +211,21 @@ class _PDFPageState extends State<PDFPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Container(
+        decoration:BoxDecoration(
+            gradient:LinearGradient(begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Colors.white,Colors.indigo] )),
+        child:
+        Scaffold(
+          backgroundColor: Colors.transparent,
       appBar: AppBar(
-        title: const Center(
-          child: Text(
+        title: Text(
             'Ticket Buyer Form',
             style: TextStyle(fontFamily: 'RobotoMono'),
           ),
+          centerTitle: true,
         ),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -253,6 +259,6 @@ class _PDFPageState extends State<PDFPage> {
           ],
         ),
       ),
-    );
+    ));
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 class HiringCars extends StatefulWidget {
   HiringCars({super.key});
 
@@ -100,7 +99,14 @@ class _HiringCarsState extends State<HiringCars> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Container(
+        decoration:BoxDecoration(
+            gradient:LinearGradient(begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Colors.white,Colors.indigo] )),
+        child:
+        Scaffold(
+          backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text('Hiring Cars'),
       ),
@@ -253,6 +259,6 @@ class _HiringCarsState extends State<HiringCars> {
           ),
         ),
       ),
-    );
+    ));
   }
 }

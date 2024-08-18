@@ -25,6 +25,7 @@ class BusSeatSelection extends StatefulWidget {
   final String date;
   final String no;
   final String description;
+  final String Fair;
 
   BusSeatSelection({
     required this.FROM,
@@ -33,6 +34,7 @@ class BusSeatSelection extends StatefulWidget {
     required this.date,
     required this.no,
     required this.description,
+    required this.Fair
   });
 
   @override
@@ -46,8 +48,8 @@ class _BusSeatSelectionState extends State<BusSeatSelection> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   List<int> _reservedSeats = [];
   String? _documentId;
-  double _totalPayment = 0.0;
-  final double seatPrice = 1000.0;
+  int _totalPayment = 0;
+  late int seatPrice;
 
   @override
   void initState() {
@@ -58,6 +60,8 @@ class _BusSeatSelectionState extends State<BusSeatSelection> {
     print("Date: ${widget.date}");
     print("Number: ${widget.no}");
     print("Description: ${widget.description}");
+
+    seatPrice = int.parse(widget.Fair);
     _fetchReservedSeats();
   }
 
@@ -163,12 +167,168 @@ class _BusSeatSelectionState extends State<BusSeatSelection> {
     }
   }
 
+  Widget _seatLayout(int seatNumber) {
+    switch (widget.description) {
+      case "Train":
+        return _trainSeatLayout(seatNumber);
+      case "Airplane":
+        return _airplaneSeatLayout(seatNumber);
+      default:
+        return _busSeatLayout(seatNumber);
+    }
+  }
+
+  Widget _busSeatLayout(int seatNumber) {
+    final bool isSelected = _selectedSeats.contains(seatNumber);
+    final bool isReserved = _reservedSeats.contains(seatNumber);
+
+    return GestureDetector(
+      onTap: !isReserved
+          ? () {
+        setState(() {
+          if (isSelected) {
+            _selectedSeats.remove(seatNumber);
+            _totalPayment -= seatPrice;
+          } else {
+            _selectedSeats.add(seatNumber);
+            _totalPayment += seatPrice;
+          }
+          _isAnySeatSelected = _selectedSeats.isNotEmpty;
+        });
+        print("Selected Seats: ${_selectedSeats.toList()}");
+      }
+          : null,
+      child: Container(
+        width: 40,
+        height: 40,
+        margin: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.black, width: 1),
+          borderRadius: BorderRadius.circular(5),
+          color: isReserved
+              ? Colors.lightBlue.shade900
+              : isSelected
+              ? Colors.lightBlue.shade400
+              : Colors.white,
+        ),
+        child: Center(
+          child: Text(
+            '$seatNumber',
+            style: TextStyle(
+              color: isReserved ? Colors.white : Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _trainSeatLayout(int seatNumber) {
+    final bool isSelected = _selectedSeats.contains(seatNumber);
+    final bool isReserved = _reservedSeats.contains(seatNumber);
+
+    return GestureDetector(
+      onTap: !isReserved
+          ? () {
+        setState(() {
+          if (isSelected) {
+            _selectedSeats.remove(seatNumber);
+            _totalPayment -= seatPrice;
+          } else {
+            _selectedSeats.add(seatNumber);
+            _totalPayment += seatPrice;
+          }
+          _isAnySeatSelected = _selectedSeats.isNotEmpty;
+        });
+        print("Selected Seats: ${_selectedSeats.toList()}");
+      }
+          : null,
+      child: Container(
+        width: 40,
+        height: 40,
+        margin: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.black, width: 1),
+          borderRadius: BorderRadius.circular(5),
+          color: isReserved
+              ? Colors.lightBlue.shade900
+              : isSelected
+              ? Colors.lightBlue.shade400
+              : Colors.white,
+        ),
+        child: Center(
+          child: Text(
+            '$seatNumber',
+            style: TextStyle(
+              color: isReserved ? Colors.white : Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _airplaneSeatLayout(int seatNumber) {
+    final bool isSelected = _selectedSeats.contains(seatNumber);
+    final bool isReserved = _reservedSeats.contains(seatNumber);
+
+    return GestureDetector(
+      onTap: !isReserved
+          ? () {
+        setState(() {
+          if (isSelected) {
+            _selectedSeats.remove(seatNumber);
+            _totalPayment -= seatPrice;
+          } else {
+            _selectedSeats.add(seatNumber);
+            _totalPayment += seatPrice;
+          }
+          _isAnySeatSelected = _selectedSeats.isNotEmpty;
+        });
+        print("Selected Seats: ${_selectedSeats.toList()}");
+      }
+          : null,
+      child: Container(
+        width: 40,
+        height: 40,
+        margin: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.black, width: 1),
+          borderRadius: BorderRadius.circular(5),
+          color: isReserved
+              ? Colors.lightBlue.shade900
+              : isSelected
+              ? Colors.lightBlue.shade400
+              : Colors.white,
+        ),
+        child: Center(
+          child: Text(
+            '$seatNumber',
+            style: TextStyle(
+              color: isReserved ? Colors.white : Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Container(
+      decoration:BoxDecoration(
+      gradient:LinearGradient(begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Colors.white,Colors.indigo] )),
+      child:
+      Scaffold(
+        backgroundColor: Colors.transparent,
       appBar: AppBar(
         centerTitle: true,
-        title: const Text("Select seat"),
+        title: const Text("Select seat",style:TextStyle(fontWeight: FontWeight.bold)),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -176,7 +336,7 @@ class _BusSeatSelectionState extends State<BusSeatSelection> {
           },
           color: Colors.black,
         ),
-        backgroundColor: Colors.grey[200],
+        backgroundColor: Colors.transparent,
         elevation: 0,
         foregroundColor: Colors.black,
       ),
@@ -191,7 +351,7 @@ class _BusSeatSelectionState extends State<BusSeatSelection> {
                   height: 40,
                   width: 40,
                   decoration: BoxDecoration(
-                    color: Colors.green,
+                    color: Colors.lightBlue.shade900,
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
@@ -204,9 +364,7 @@ class _BusSeatSelectionState extends State<BusSeatSelection> {
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Center(
-                    child: Icon(
-                      Icons.add,
-                    ),
+                    child: Icon(Icons.add),
                   ),
                 ),
                 Text("Vacant"),
@@ -216,45 +374,12 @@ class _BusSeatSelectionState extends State<BusSeatSelection> {
           Expanded(
             child: Stack(
               children: [
-                Positioned(
-                  top: 10,
-                  left: 60,
-                  child: Card(
-                    elevation: 10,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          for (int i = 0; i < 9; i++)
-                            Row(
-                              children: [
-                                for (int j = 0; j < 2; j++)
-                                  _seatLayout(i * 4 + j + 1),
-                                SizedBox(
-                                  width: 47,
-                                ),
-                                for (int j = 2; j < 4; j++)
-                                  _seatLayout(i * 4 + j + 1),
-                              ],
-                            ),
-                          // Last row with an extra seat in the gap
-                          Row(
-                            children: [
-                              _seatLayout(37),
-                              _seatLayout(38),
-                              _seatLayout(39), // Extra seat in the gap
-                              _seatLayout(40),
-                              _seatLayout(41),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                if (widget.description == "Bus")
+                  ..._busLayout(),
+                if (widget.description == "Train")
+                  ..._trainLayout(),
+                if (widget.description == "Airplane")
+                  ..._airplaneLayout(),
               ],
             ),
           ),
@@ -263,6 +388,7 @@ class _BusSeatSelectionState extends State<BusSeatSelection> {
       bottomNavigationBar: SizedBox(
         height: 130,
         child: BottomAppBar(
+          color: Colors.transparent,
           elevation: 64,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
@@ -271,16 +397,12 @@ class _BusSeatSelectionState extends State<BusSeatSelection> {
               children: [
                 Row(
                   children: [
-                    SizedBox(
-                      width: 15,
-                    ),
+                    SizedBox(width: 15),
                     Text(
-                      "Seat: ${_selectedSeats.length}/41",
+                      "Seat: ${_selectedSeats.length}",
                       style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(
-                      width: 120,
-                    ),
+                    SizedBox(width: 130),
                     Text(
                       "Total Payment: \$${_totalPayment.toStringAsFixed(2)}",
                       style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
@@ -293,6 +415,12 @@ class _BusSeatSelectionState extends State<BusSeatSelection> {
                     onTap: _isAnySeatSelected
                         ? () async {
                       await _reserveSeats();
+                      setState(() {
+                        _reservedSeats.addAll(_selectedSeats);
+                        _selectedSeats.clear();
+                        _isAnySeatSelected = false;
+                        _totalPayment = 0;
+                      });
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -313,7 +441,8 @@ class _BusSeatSelectionState extends State<BusSeatSelection> {
                     child: Container(
                       height: 20,
                       decoration: BoxDecoration(
-                        color: _isAnySeatSelected ? Colors.red : Colors.amberAccent,
+                        border: Border.all(color: Colors.black, width: 0.5),
+                        color: _isAnySeatSelected ? Colors.lightBlue.shade900: Colors.transparent,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Center(
@@ -356,59 +485,126 @@ class _BusSeatSelectionState extends State<BusSeatSelection> {
           ),
         ),
       ),
-    );
+    ));
   }
 
-  Widget _seatLayout(int seatNumber) {
-    final bool isSelected = _selectedSeats.contains(seatNumber);
-    final bool isReserved = _reservedSeats.contains(seatNumber);
-
-    return GestureDetector(
-      onTap: !isReserved
-          ? () {
-        setState(() {
-          if (isSelected) {
-            _selectedSeats.remove(seatNumber);
-            _totalPayment -= seatPrice;
-          } else {
-            _selectedSeats.add(seatNumber);
-            _totalPayment += seatPrice;
-          }
-          _isAnySeatSelected = _selectedSeats.isNotEmpty;
-        });
-        print("Selected Seats: ${_selectedSeats.toList()}");
-      }
-          : null,
-      child: Container(
-        width: 40,
-        height: 40,
-        margin: const EdgeInsets.all(4),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: Colors.black,
-            width: 1,
+  List<Widget> _busLayout() {
+    return [
+      Positioned(
+        top: 10,
+        left: 60,
+        child: Card(
+          color: Colors.transparent,
+          elevation: 80,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
           ),
-          borderRadius: BorderRadius.circular(5),
-          color: isReserved
-              ? Colors.green
-              : isSelected
-              ? Colors.lightGreenAccent
-              : Colors.white,
-        ),
-        child: Center(
-          child: Text(
-            '$seatNumber',
-            style: TextStyle(
-              color: isReserved
-                  ? Colors.white
-                  : isSelected
-                  ? Colors.black
-                  : Colors.black,
-              fontWeight: FontWeight.bold,
+          child:
+          Padding(
+
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                for (int i = 0; i < 9; i++)
+                  Row(
+                    children: [
+                      for (int j = 0; j < 2; j++)
+                        _seatLayout(i * 4 + j + 1),
+                      SizedBox(
+                        width: 47,
+                      ),
+                      for (int j = 2; j < 4; j++)
+                        _seatLayout(i * 4 + j + 1),
+                    ],
+                  ),
+                Row(
+                  children: [
+                    _seatLayout(37),
+                    _seatLayout(38),
+                    _seatLayout(39), // Extra seat in the gap
+                    _seatLayout(40),
+                    _seatLayout(41),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
       ),
-    );
+    ];
+  }
+
+  List<Widget> _trainLayout() {
+    return [
+      Positioned(
+        top: 10,
+        left: 50,
+        child: Card(
+          color: Colors.transparent,
+          elevation: 80,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child:
+          Padding(
+
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                for (int i = 0; i <= 9; i++)
+                  Row(
+                    children: [
+                      for (int j = 0; j < 2; j++)
+                        _seatLayout(i * 5 + j + 1),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      for (int j = 2; j <= 4; j++)
+                        _seatLayout(i * 5 + j + 1),
+                    ],
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ];
+  }
+
+  List<Widget> _airplaneLayout() {
+    return [
+      Positioned(
+        top: 10,
+        left: 50,
+        child: Card(
+          color: Colors.transparent,
+          elevation: 80,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child:
+          Padding(
+
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                for (int i = 0; i <= 9; i++)
+                  Row(
+                    children: [
+                      for (int j = 0; j < 2; j++)
+                        _seatLayout(i * 5 + j + 1),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      for (int j = 2; j <= 4; j++)
+                        _seatLayout(i * 5 + j + 1),
+                    ],
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ];
   }
 }

@@ -8,8 +8,16 @@ class QRPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Container(
+        decoration:BoxDecoration(
+        gradient:LinearGradient(begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Colors.white,Colors.indigo] )),
+    child:
+    Scaffold(
+    backgroundColor: Colors.transparent,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         title: Text('QR Code'),
       ),
       body: Center(
@@ -19,6 +27,7 @@ class QRPage extends StatelessWidget {
           size: 300.0,
         ),
       ),
+    )
     );
   }
 }
