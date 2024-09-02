@@ -1,12 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'bus_seat_selection.dart';
+import 'BusOptions.dart';
 
 class BusOption extends StatefulWidget {
   final int cur;
-
-  const BusOption({super.key, required this.cur});
+  BusOption({super.key, required this.cur});
 
   @override
   State<BusOption> createState() => _BusOptionState();
@@ -17,6 +16,8 @@ class _BusOptionState extends State<BusOption> {
   String? selectedTo;
   String? formattedDate;
   DateTime? selectedDate;
+  late int cur;
+
   final List<String> locations = [
     'Dhaka',
     'Rajshahi',
@@ -25,12 +26,21 @@ class _BusOptionState extends State<BusOption> {
     'Munshiganj',
     'Chittagong',
     'Rangpur',
-    'Sylhet'
+    'Sylhet',
+    'Barishal',
+
   ];
 
   List<Map<String, dynamic>> filteredOptions = [];
   bool noBusFound = false;
   bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    cur = widget.cur;
+    print('Current mode (cur value): $cur'); // Debugging
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -47,30 +57,54 @@ class _BusOptionState extends State<BusOption> {
     }
   }
 
+  String getCollectionName(int cur) {
+    switch (cur) {
+      case 0:
+        return "Bus";
+      case 1:
+        return "Train";
+      case 2:
+        return "Airplane";
+      default:
+        return "Bus"; // Default to "Bus" if cur is out of expected range
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration:BoxDecoration(
-            gradient:LinearGradient(begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Colors.white,Colors.indigo] )),
-        child:
-        Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            title: const  Text(
-                'Search',
-                style: TextStyle(fontFamily: 'RobotoMono'),
-              ),
-            centerTitle: true,
+      //backgroundColor: Colors.transparent,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Colors.white, Colors.indigo],
+        ),
+      ),
+      child:Scaffold(
+         appBar: AppBar(
+        //backgroundColor: Colors.transparent,
+        title:  Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'JanBahon',
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
             ),
+            SizedBox(width: 10),
+            Icon(Icons.search, color: Colors.indigo),
+          ],
+        ),
+        centerTitle: true,
+
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              const SizedBox(height: 20),
+
+              SizedBox(height: 20),
               DropdownButtonFormField<String>(
                 decoration: InputDecoration(
                   fillColor: Colors.white54,
@@ -94,19 +128,18 @@ class _BusOptionState extends State<BusOption> {
                   });
                 },
               ),
-              const SizedBox(height: 16.0),
+              SizedBox(height: 16.0),
               DropdownButtonFormField<String>(
                 decoration: InputDecoration(
                   fillColor: Colors.white54,
                   filled: true,
                   labelText: 'To:',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
+                    borderRadius: BorderRadius.circular(35),
                   ),
                 ),
                 value: selectedTo,
-                items: locations
-                    .where((location) => location != selectedFrom)
+                items: locations.where((location) => location != selectedFrom)
                     .map((String location) {
                   return DropdownMenuItem<String>(
                     value: location,
@@ -119,7 +152,7 @@ class _BusOptionState extends State<BusOption> {
                   });
                 },
               ),
-              const SizedBox(height: 16.0),
+              SizedBox(height: 16.0),
               TextField(
                 decoration: InputDecoration(
                   fillColor: Colors.white54,
@@ -137,24 +170,22 @@ class _BusOptionState extends State<BusOption> {
                       : '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}',
                 ),
               ),
-              const SizedBox(height: 16.0),
+              SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () async {
-                  if (selectedFrom == null ||
-                      selectedTo == null ||
-                      selectedDate == null) {
+                  if (selectedFrom == null || selectedTo == null || selectedDate == null) {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: const Text('Error'),
-                          content: const Text('Please select all fields'),
+                          title: Text('Error'),
+                          content: Text('Please select all fields'),
                           actions: [
                             TextButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: const Text('OK'),
+                              child: Text('OK'),
                             ),
                           ],
                         );
@@ -168,18 +199,15 @@ class _BusOptionState extends State<BusOption> {
                   });
 
                   try {
-                    formattedDate =
-                        DateFormat('MM/dd/yyyy').format(selectedDate!);
-                    print(
-                        'Searching from $selectedFrom to $selectedTo on $formattedDate');
+                    formattedDate = DateFormat('MM/dd/yyyy').format(selectedDate!);
+                    print('Searching from $selectedFrom to $selectedTo on $formattedDate');
+
+                    String collectionName = getCollectionName(cur);
+                    print('Selected collection: $collectionName'); // Debugging
 
                     QuerySnapshot querySnapshot = await FirebaseFirestore
                         .instance
-                        .collection(widget.cur == 0
-                        ? "Bus"
-                        : widget.cur == 1
-                        ? "Train"
-                        : "Airplane")
+                        .collection(collectionName)
                         .where('Date', isEqualTo: formattedDate)
                         .where('FROM1', isEqualTo: selectedFrom)
                         .where('TO1', isEqualTo: selectedTo)
@@ -207,15 +235,14 @@ class _BusOptionState extends State<BusOption> {
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: const Text('Sorry'),
-                            content: const Text(
-                                'No options found for the selected criteria.'),
+                            title: Text('Sorry'),
+                            content: Text('No vehicle found for the selected criteria.'),
                             actions: [
                               TextButton(
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: const Text('OK'),
+                                child: Text('OK'),
                               ),
                             ],
                           );
@@ -233,12 +260,12 @@ class _BusOptionState extends State<BusOption> {
                   }
                 },
                 child: isLoading
-                    ? const CircularProgressIndicator(
+                    ? CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 )
-                    : const Text('Search'),
+                    : Text('Search'),
               ),
-              const SizedBox(height: 16.0),
+              SizedBox(height: 16.0),
               Column(
                 children: filteredOptions.map((option) {
                   return buildBoxB(
@@ -250,8 +277,8 @@ class _BusOptionState extends State<BusOption> {
                     option["Date"]!,
                     option["time"]!,
                     option["no"]!,
-                    widget.cur,
-                    option["Fair"]!,
+                    cur,
+                    option["Fair"],
                   );
                 }).toList(),
               ),
@@ -259,156 +286,7 @@ class _BusOptionState extends State<BusOption> {
           ),
         ),
       ),
-    ));
-  }
-
-  Widget buildBoxB(
-      BuildContext context,
-      String FROM,
-      String FROM1,
-      String TO,
-      String TO1,
-      String date,
-      String time,
-      String no,
-      int cur,
-      String money,
-      ) {
-    String description = "";
-    IconData getIcon(int cur) {
-      switch (cur) {
-        case 0:
-          description = "Bus";
-          return Icons.airport_shuttle; // Bus icon
-        case 1:
-          description = "Train";
-          return Icons.train; // Train icon
-        case 2:
-          description = "Airplane";
-          return Icons.airplanemode_active; // Airplane icon
-        default:
-          description = "Bus";
-          return Icons.directions_bus; // Default icon (bus)
-      }
-    }
-
-    IconData icon = getIcon(cur);
-
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => BusSeatSelection(
-              FROM: FROM,
-              TO: TO,
-              Time: time,
-              date: date,
-              no: no,
-              description: description,
-              Fair: money,
-            ),
-          ),
-        );
-      },
-      child: Container(
-        margin: const EdgeInsets.all(16.0),
-        padding: const EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 2,
-              blurRadius: 5,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        FROM,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(FROM1),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Icon(icon, size: 32),
-                      Text(no),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        TO,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(TO1),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16.0),
-            const Divider(thickness: 1, color: Colors.grey),
-            const SizedBox(height: 16.0),
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Date', style: TextStyle(color: Colors.grey)),
-                      Text(date),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text('Fare', style: const TextStyle(color: Colors.grey)),
-                      Text('$money TK'),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      const Text('Time', style: TextStyle(color: Colors.grey)),
-                      Text(time),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+      )
     );
   }
 }

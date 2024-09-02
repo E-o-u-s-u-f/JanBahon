@@ -111,7 +111,23 @@ class _LiveTrackingState extends State<LiveTracking> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Bus Tracking Map")),
+      backgroundColor: Colors.indigo[100],
+      appBar: AppBar(
+
+        backgroundColor: Colors.transparent,
+        title:  Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'JanBahon',
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+            ),
+            SizedBox(width: 10),
+            Icon(Icons.map_outlined, color: Colors.indigo),
+          ],
+        ),
+        centerTitle: true,
+      ),
       body: GoogleMap(
         initialCameraPosition: CameraPosition(
           target: _currentPosition,

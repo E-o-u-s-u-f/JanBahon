@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
+import 'package:slide_to_act/slide_to_act.dart';
 import 'dart:io';
 import 'package:uuid/uuid.dart';
 import 'QRcode.dart';
@@ -247,15 +248,18 @@ class _PDFPageState extends State<PDFPage> {
               ),
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _generatePdfAndUpload,
-              child: Text('Generate your ticket and QR Code'),
+            SlideAction(
+              onSubmit: _generatePdfAndUpload,
+              text: 'Swipe for Ticket & QR ',
+              innerColor: Colors.white,
+              outerColor: Colors.indigo,
+              sliderButtonIcon: Icon(
+                Icons.arrow_forward_ios,
+                color: Colors.indigo,
+              ),
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _proceedToPayment,
-              child: Text('Back'),
-            ),
+
+
           ],
         ),
       ),
