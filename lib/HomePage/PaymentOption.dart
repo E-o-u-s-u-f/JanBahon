@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jan_bahon/HomePage/homeScreen.dart';
 import 'package:jan_bahon/HomePage/pdf_page.dart';
+import 'package:slide_to_act/slide_to_act.dart';
 
 class Payment extends StatefulWidget {
   final int totalPayment;
@@ -33,8 +34,15 @@ class _PaymentState extends State<Payment> {
   final TextEditingController _cvvController = TextEditingController();
   bool _loading = false;
   String? _selectedPaymentMethod = 'Credit Card';
+  bool _isSwiped = false;
 
   void _processPayment() {
+    // Check if card number is empty
+    if (_selectedPaymentMethod == 'Credit Card' && _cardNumberController.text.isEmpty) {
+      _showErrorDialog("Card number cannot be empty.");
+      return;
+    }
+
     setState(() {
       _loading = true;
     });
@@ -49,6 +57,26 @@ class _PaymentState extends State<Payment> {
         _showPaymentSuccessDialog();
       });
     });
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _showPaymentSuccessDialog() {
@@ -151,84 +179,92 @@ class _PaymentState extends State<Payment> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     return Container(
-        decoration:BoxDecoration(
-            gradient:LinearGradient(begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Colors.white,Colors.indigo] )),
-        child:
-        Scaffold(
-          backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        title: Text('Payment Page'),
-        backgroundColor: Colors.transparent,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Colors.white, Colors.indigo],
+        ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            SizedBox(height: 20.0),
-            Center(
-              child: Text(
-                'Enter Your Payment Details',
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: Text('Payment Page'),
+          backgroundColor: Colors.transparent,
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(height: 20.0),
+              Center(
+                child: Text(
+                  'Enter Your Payment Details',
+                  style: TextStyle(
+                    fontSize: 22.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              SizedBox(height: 40.0),
+              Text(
+                'Total Payment: \$${widget.totalPayment.toStringAsFixed(2)}',
                 style: TextStyle(
-                  fontSize: 22.0,
+                  fontSize: 20.0,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                 ),
+                textAlign: TextAlign.center,
               ),
-            ),
-            SizedBox(height: 40.0),
-            Text(
-              'Total Payment: \$${widget.totalPayment.toStringAsFixed(2)}',
-              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.black),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 40.0),
-            _buildPaymentMethodOption('Credit Card'),
-            _buildPaymentMethodOption('Google Pay'),
-            _buildPaymentMethodOption('PayPal'),
-            SizedBox(height: 16.0),
-            if (_selectedPaymentMethod == 'Credit Card') _buildCreditCardForm(),
-            if (_selectedPaymentMethod == 'Google Pay')
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  'Redirecting to Google Pay...',
-                  style: TextStyle(fontSize: 16.0, color: Colors.grey),
+              SizedBox(height: 40.0),
+              _buildPaymentMethodOption('Credit Card'),
+              _buildPaymentMethodOption('Google Pay'),
+              _buildPaymentMethodOption('PayPal'),
+              SizedBox(height: 16.0),
+              if (_selectedPaymentMethod == 'Credit Card') _buildCreditCardForm(),
+              if (_selectedPaymentMethod == 'Google Pay')
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Redirecting to Google Pay...',
+                    style: TextStyle(fontSize: 16.0, color: Colors.grey),
+                  ),
                 ),
-              ),
-            if (_selectedPaymentMethod == 'PayPal')
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  'Redirecting to PayPal...',
-                  style: TextStyle(fontSize: 16.0, color: Colors.grey),
+              if (_selectedPaymentMethod == 'PayPal')
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Redirecting to PayPal...',
+                    style: TextStyle(fontSize: 16.0, color: Colors.grey),
+                  ),
                 ),
-              ),
-            SizedBox(height: 24.0),
-            ElevatedButton(
-              onPressed: _loading ? null : _processPayment,
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 14.0), backgroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.0),
+              SizedBox(height: 24.0),
+              SlideAction(
+                sliderButtonIcon: const Icon(
+                  Icons.payment_outlined,
+                  color: Colors.indigo,
                 ),
+                text: 'Swipe to Pay',
+                textStyle: TextStyle(
+                  fontSize: 18.0,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+                innerColor: Colors.white,
+                outerColor: Colors.indigoAccent,
+                onSubmit: () {
+                  _processPayment();
+                },
               ),
-              child: _loading
-                  ? CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              )
-                  : Text(
-                'Pay Now',
-                style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    ));
+    );
   }
 }

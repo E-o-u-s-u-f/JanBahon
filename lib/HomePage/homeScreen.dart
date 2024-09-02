@@ -6,10 +6,8 @@ import 'package:jan_bahon/HomePage/QRviewAuth.dart';
 //import 'package:jan_bahon/HomePage/BusOptions.dart';
 //import 'package:jan_bahon/HomePage/filter.dart';
 //import 'package:jan_bahon/HomePage/help.dart';
-
 import '../Screens/log_in.dart';
 import 'BusOptions.dart';
-
 import 'CarHiring.dart';
 import 'Contact.dart';
 import 'MapViewAuth.dart';
@@ -17,7 +15,6 @@ import 'Settings.dart';
 import 'chat_screen.dart';
 import 'help.dart';
 import 'liveTrackMap.dart';
-
 
 class homeS extends StatefulWidget {
   const homeS({super.key});
@@ -29,16 +26,15 @@ class homeS extends StatefulWidget {
 class _State extends State<homeS> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController _controller = TextEditingController(text: 'Filter');
+  final PageController _pageController = PageController();
 
-  Color textB1 = Colors.cyan;
-  Color textB2 = Colors.pinkAccent;
-  Color textB3 = Colors.orangeAccent;
-  Color containerCol = Colors.cyan;
-  Color containerCol2 = Colors.pinkAccent;
-  Color containerCol3 = Colors.orangeAccent;
+  String imageurl1 = 'https://images.unsplash.com/photo-1570125909517-53cb21c89ff2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
+  String imageurl2='https://images.unsplash.com/photo-1644770633699-5129770e0404?q=80&w=2008&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
+  String imageurl3= 'https://images.unsplash.com/photo-1716918269977-a35b2c51f08e?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
+
   int _selectedIndex = 0;
   int selInd = 0;
-  String _imageUrl = 'https://images.unsplash.com/photo-1570125909517-53cb21c89ff2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
+  // String _imageUrl = 'https://images.unsplash.com/photo-1570125909517-53cb21c89ff2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
 
   Future<List<Map<String, dynamic>>> fetchBusData() async {
     var firestore = FirebaseFirestore.instance;
@@ -58,46 +54,17 @@ class _State extends State<homeS> {
     return qn.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
   }
 
-  void changeColor() {
-    setState(() {
-      if (containerCol == textB1) {
-        containerCol == Colors.white ? Colors.cyan : Colors.white;
-      } else if (containerCol2 == textB2) {
-        containerCol2 == Colors.white ? Colors.pinkAccent : Colors.white;
-      } else {
-        containerCol3 == Colors.white ? Colors.orangeAccent : Colors.white;
-      }
-    });
-  }
-  static List<Widget> _widgetOptions1 = <Widget>[
-    homeS(),
-    MapviewAccessPage(),
-    QRviewAccessPage(),
-  ];
-
   void _onIconTapped(int index) {
     setState(() {
       _selectedIndex = index;
-      switch (index) {
-        case 0:
-          _imageUrl = 'https://images.unsplash.com/photo-1570125909517-53cb21c89ff2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
-          break;
-        case 1:
-          _imageUrl = 'https://images.unsplash.com/photo-1644770633699-5129770e0404?q=80&w=2008&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
-          break;
-        case 2:
-          _imageUrl = 'https://images.unsplash.com/photo-1716918269977-a35b2c51f08e?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
-          break;
-        default:
-          _imageUrl = 'https://images.unsplash.com/photo-1570125909517-53cb21c89ff2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
-      }
+      _pageController.jumpToPage(index);
     });
   }
 
   @override
   Widget build(BuildContext context) {
 
-    Widget shuttleContent = FutureBuilder(
+    Widget busContent = FutureBuilder(
       future: fetchBusData(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -113,29 +80,20 @@ class _State extends State<homeS> {
               //padding: EdgeInsets.all(16.0),
               child: Column(
                 children: <Widget>[
-                  Image(
-                    image: NetworkImage(_imageUrl),
-                  ),
                   Container(
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.white,
-                          Colors.transparent
-                        ],
-                      ),
+                    height: 225,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.0),
+                      border: Border.all(color: Colors.transparent, width: 2.0),
                     ),
-                    padding: const EdgeInsets.all(10),
-
-                    child: Center(
-
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) =>BusOption(cur: 0)));
-                        },
-                        child: const Text('Click here to search', style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold, color: Colors.black)),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20.0),
+                      child: Image(
+                        image: NetworkImage(imageurl1),
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
                       ),
                     ),
                   ),
@@ -160,7 +118,7 @@ class _State extends State<homeS> {
       },
     );
 
-    Widget busContent = FutureBuilder(
+    Widget trainContent = FutureBuilder(
       future: fetchTrainData(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -176,27 +134,20 @@ class _State extends State<homeS> {
               //padding: EdgeInsets.all(16.0),
               child: Column(
                 children: <Widget>[
-                  Image(
-                    image: NetworkImage(_imageUrl),
-                  ),
                   Container(
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.white,
-                          Colors.transparent
-                        ],
-                      ),
+                    height: 225,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.0),
+                      border: Border.all(color: Colors.transparent, width: 2.0),
                     ),
-                    padding: const EdgeInsets.all(10),
-                    child: Center(
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) =>BusOption(cur:1)));
-                        },
-                        child: const Text('Click here to search', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color: Colors.black)),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20.0),
+                      child: Image(
+                        image: NetworkImage(imageurl2),
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
                       ),
                     ),
                   ),
@@ -221,7 +172,7 @@ class _State extends State<homeS> {
       },
     );
 
-    Widget trainContent = FutureBuilder(
+    Widget airplaneContent = FutureBuilder(
       future: fetchAirplaneData(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -237,27 +188,20 @@ class _State extends State<homeS> {
               //padding: EdgeInsets.all(16.0),
               child: Column(
                 children: <Widget>[
-                  Image(
-                    image: NetworkImage(_imageUrl),
-                  ),
                   Container(
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.white,
-                          Colors.transparent
-                        ],
-                      ),
+                    height: 225,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.0),
+                      border: Border.all(color: Colors.transparent, width: 2.0),
                     ),
-                    padding: const EdgeInsets.all(10),
-                    child: Center(
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) =>BusOption(cur:2)));
-                        },
-                        child: const Text('Click here to search', style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold, color: Colors.black)),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20.0),
+                      child: Image(
+                        image: NetworkImage(imageurl3),
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
                       ),
                     ),
                   ),
@@ -283,18 +227,20 @@ class _State extends State<homeS> {
     );
 
     List<Widget> _widgetOptions = <Widget>[
-      shuttleContent,
       busContent,
       trainContent,
+      airplaneContent,
     ];
 
     return Container(
         decoration:BoxDecoration(
-            gradient:LinearGradient(begin: Alignment.topLeft,
+            gradient:LinearGradient(
+                begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [Colors.white,Colors.indigo] )),
-        child:
-        Scaffold(
+                colors: [Colors.white,Colors.indigo]
+            )
+        ),
+        child: Scaffold(
           backgroundColor: Colors.transparent,
           key: _scaffoldKey,
           appBar: AppBar(
@@ -305,26 +251,57 @@ class _State extends State<homeS> {
                 _scaffoldKey.currentState!.openDrawer();
               },
             ),
-            title: const Text('JanBahon',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold
-              ),
+            title:Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'JanBah',
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+                ),
+                Transform.rotate(
+                  angle: 0.01,
+                  child: Image.asset('assets/new.png', height: 20),
+                ),
+                Text(
+                  'n',
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+                ),
+              ],
             ),
             centerTitle: true,
             backgroundColor: Colors.transparent,
+            actions: [
+              IconButton(
+                icon: Icon(Icons.filter_list),
+                color: Colors.black,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation, secondaryAnimation) => BusOption(cur: _selectedIndex),
+                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                        const begin = Offset(1.0, 0.0);
+                        const end = Offset.zero;
+                        const curve = Curves.easeInOut;
+                        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                        var offsetAnimation = animation.drive(tween);
+                        return SlideTransition(position: offsetAnimation, child: child);
+                      },
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
           body: Center(
-
             child: Column(
               children: <Widget>[
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Expanded(
                       child: Container(
-                        padding: EdgeInsets.all(10.0),
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
@@ -334,23 +311,31 @@ class _State extends State<homeS> {
                             ],
                           ),
                         ),
-                        child: Column(
-                          children: [
-                            IconButton(
-                              color: Colors.black,
-                              icon: Icon(Icons.airport_shuttle),
-                              iconSize: 35.0,
-                              onPressed: () => _onIconTapped(0),
-                            ),
-                          ],
+                        child: IconButton(
+                          icon: Icon(Icons.qr_code),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder: (context, animation, secondaryAnimation) => QRviewAccessPage(),
+                                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                  const begin = Offset(1.0, 0.0);
+                                  const end = Offset.zero;
+                                  const curve = Curves.easeInOut;
+                                  var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                                  var offsetAnimation = animation.drive(tween);
+                                  return SlideTransition(position: offsetAnimation, child: child);
+                                },
+                              ),
+                            );
+                          },
                         ),
                       ),
                     ),
-                    const SizedBox(width: 2,),
+                    const SizedBox(width: 2),
                     Expanded(
                       child: Container(
-                        padding: EdgeInsets.all(10.0),
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
@@ -360,52 +345,44 @@ class _State extends State<homeS> {
                             ],
                           ),
                         ),
-                        child: Column(
-                          children: [
-                            IconButton(
-                              color: Colors.black,
-                              icon: Icon(Icons.train),
-                              iconSize: 35.0,
-                              onPressed: () => _onIconTapped(1),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 2,),
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.all(10.0),
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Colors.white,
-                              Colors.transparent
-                            ],
-                          ),
-                        ),
-                        child: Column(
-                          children: [
-                            IconButton(
-                              color: Colors.black,
-                              icon: Icon(Icons.airplane_ticket),
-                              iconSize: 35.0,
-                              onPressed: () => _onIconTapped(2),
-                            ),
-                          ],
+                        child: IconButton(
+                          icon: Icon(Icons.map),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder: (context, animation, secondaryAnimation) => MapviewAccessPage(),
+                                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                  const begin = Offset(1.0, 0.0);
+                                  const end = Offset.zero;
+                                  const curve = Curves.easeInOut;
+                                  var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                                  var offsetAnimation = animation.drive(tween);
+                                  return SlideTransition(position: offsetAnimation, child: child);
+                                },
+                              ),
+                            );
+                          },
                         ),
                       ),
                     ),
                   ],
                 ),
                 Expanded(
-                  child: _widgetOptions.elementAt(_selectedIndex),
+                  child: PageView(
+                    controller: _pageController,
+                    onPageChanged: (index) {
+                      setState(() {
+                        _selectedIndex = index;
+                      });
+                    },
+                    children: _widgetOptions,
+                  ),
                 ),
               ],
             ),
           ),
+
           floatingActionButton: FloatingActionButton(
             splashColor: Colors.white,
             onPressed: () {
@@ -438,53 +415,32 @@ class _State extends State<homeS> {
                   ),
                 ),
                 Container(
-                  decoration: BoxDecoration(
-                    border: Border(bottom: BorderSide(color: Colors.grey, width: .8)),
-                  ),
+                  /*decoration: BoxDecoration(
+                border: Border(bottom: BorderSide(color: Colors.grey, width: .8)),
+              ),*/
+                  color: Colors.transparent,
                   child: ListTile(
-                    title: Text('Map'),
+                    leading: Icon(Icons.home),
+                    title: Text('Home'),
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => LiveTracking()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => homeS()));
                     },
                   ),
                 ),
                 Container(
-                  decoration: BoxDecoration(
-                    border: Border(bottom: BorderSide(color: Colors.grey, width: .9)),
-                  ),
+                  color: Colors.transparent,
                   child: ListTile(
-                    title: Text('Settings'),
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) =>  settingsScreen()));
-                    },
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border(bottom: BorderSide(color: Colors.grey, width: .8)),
-                  ),
-                  child: ListTile(
-                    title: Text('Help'),
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => HelpPage()));
-                    },
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border(bottom: BorderSide(color: Colors.grey, width: .8)),
-                  ),
-                  child: ListTile(
+                    leading: Icon(Icons.contacts),
                     title: Text('Contact'),
                     onTap: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => ContactPage()));
                     },
                   ),
-                ),Container(
-                  decoration: BoxDecoration(
-                    border: Border(bottom: BorderSide(color: Colors.grey, width: .8)),
-                  ),
+                ),
+                Container(
+                  color: Colors.transparent,
                   child: ListTile(
+                    leading: Icon(Icons.directions_car),
                     title: Text('Car Hiring'),
                     onTap: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => HiringCars()));
@@ -492,10 +448,28 @@ class _State extends State<homeS> {
                   ),
                 ),
                 Container(
-                  decoration: BoxDecoration(
-                    border: Border(bottom: BorderSide(color: Colors.grey, width: .8)),
-                  ),
+                  color: Colors.transparent,
                   child: ListTile(
+                    leading: Icon(Icons.settings),
+                    title: Text('Settings'),
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) =>  settingsScreen()));
+                    },
+                  ),
+                ),
+                Container(
+                  child: ListTile(
+                    leading: Icon(Icons.help),
+                    title: Text('Help'),
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => HelpPage()));
+                    },
+                  ),
+                ),
+                Container(
+                  color: Colors.transparent,
+                  child: ListTile(
+                    leading: Icon(Icons.logout),
                     title: Text('Log out'),
                     onTap: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => BottomBar()));
@@ -506,36 +480,36 @@ class _State extends State<homeS> {
             ),
           ),
           bottomNavigationBar: BottomNavigationBar(
-            backgroundColor: Colors.indigo,
             elevation: 10,
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
-                icon: Icon(Icons.home,color: Colors.black),
-                label: 'Home',
+                icon: Icon(Icons.directions_bus),
+                label: 'Bus',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.camera,color: Colors.black),
-                label: 'Map',
+                icon: Icon(Icons.train),
+                label: 'Train',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.qr_code_2,color: Colors.black),
-                label: 'QR Code',
+                icon: Icon(Icons.airplanemode_active),
+                label: 'Airplane',
               ),
             ],
-            currentIndex: selInd,
-            selectedItemColor: Colors.white,
-            selectedIconTheme: IconThemeData(color: Colors.white),
+            selectedItemColor: Colors.indigoAccent,
+            selectedIconTheme: IconThemeData(color: Colors.indigoAccent),
             unselectedLabelStyle:TextStyle(fontWeight: FontWeight.bold) ,
             selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
-            onTap: (index) {
-              setState(() {
-                selInd = index;
-              });
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => _widgetOptions1[index]),
-              );
-            },
+            currentIndex: _selectedIndex,
+            onTap: _onIconTapped,
+            /*onTap: (index) {
+          setState(() {
+            selInd = index;
+          });
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => _widgetOptions1[index]),
+          );
+        },*/
           ),
         ));
   }
