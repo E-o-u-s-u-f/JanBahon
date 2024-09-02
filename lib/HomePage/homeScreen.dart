@@ -140,18 +140,18 @@ class _State extends State<homeS> {
                     ),
                   ),
                   for (var bus in busData)
-          buildBoxB(
-            context,
-            bus['FROM'] ?? 'Unknown',
-            bus['FROM1'] ?? 'Unknown',
-            bus['TO'] ?? 'Unknown',
-            bus['TO1'] ?? 'Unknown',
-            bus['Date'] ?? 'Unknown',
-            bus['time'] ?? 'Unknown',
-            bus['no'] ?? 'Unknown',
-            0,
-            bus['Fair']??'Unknown',
-        ),
+                    buildBoxB(
+                      context,
+                      bus['FROM'] ?? 'Unknown',
+                      bus['FROM1'] ?? 'Unknown',
+                      bus['TO'] ?? 'Unknown',
+                      bus['TO1'] ?? 'Unknown',
+                      bus['Date'] ?? 'Unknown',
+                      bus['time'] ?? 'Unknown',
+                      bus['no'] ?? 'Unknown',
+                      0,
+                      bus['Fair']??'Unknown',
+                    ),
                 ],
               ),
             ),
@@ -294,250 +294,250 @@ class _State extends State<homeS> {
                 end: Alignment.bottomRight,
                 colors: [Colors.white,Colors.indigo] )),
         child:
-      Scaffold(
-        backgroundColor: Colors.transparent,
-      key: _scaffoldKey,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.menu),
-          color: Colors.black,
-          onPressed: () {
-            _scaffoldKey.currentState!.openDrawer();
-          },
-        ),
-        title: const Text('JanBahon',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 20.0,
-            fontWeight: FontWeight.bold
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          key: _scaffoldKey,
+          appBar: AppBar(
+            leading: IconButton(
+              icon: Icon(Icons.menu),
+              color: Colors.black,
+              onPressed: () {
+                _scaffoldKey.currentState!.openDrawer();
+              },
+            ),
+            title: const Text('JanBahon',
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold
+              ),
+            ),
+            centerTitle: true,
+            backgroundColor: Colors.transparent,
           ),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-      ),
-      body: Center(
+          body: Center(
 
-        child: Column(
-          children: <Widget>[
-            Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.all(10.0),
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.white,
-                          Colors.transparent
-                        ],
+            child: Column(
+              children: <Widget>[
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.all(10.0),
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.white,
+                              Colors.transparent
+                            ],
+                          ),
+                        ),
+                        child: Column(
+                          children: [
+                            IconButton(
+                              color: Colors.black,
+                              icon: Icon(Icons.airport_shuttle),
+                              iconSize: 35.0,
+                              onPressed: () => _onIconTapped(0),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    child: Column(
-                      children: [
-                        IconButton(
-                    color: Colors.black,
-                          icon: Icon(Icons.airport_shuttle),
-                          iconSize: 35.0,
-                          onPressed: () => _onIconTapped(0),
+                    const SizedBox(width: 2,),
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.all(10.0),
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.white,
+                              Colors.transparent
+                            ],
+                          ),
                         ),
+                        child: Column(
+                          children: [
+                            IconButton(
+                              color: Colors.black,
+                              icon: Icon(Icons.train),
+                              iconSize: 35.0,
+                              onPressed: () => _onIconTapped(1),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 2,),
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.all(10.0),
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.white,
+                              Colors.transparent
+                            ],
+                          ),
+                        ),
+                        child: Column(
+                          children: [
+                            IconButton(
+                              color: Colors.black,
+                              icon: Icon(Icons.airplane_ticket),
+                              iconSize: 35.0,
+                              onPressed: () => _onIconTapped(2),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Expanded(
+                  child: _widgetOptions.elementAt(_selectedIndex),
+                ),
+              ],
+            ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            splashColor: Colors.white,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ChatScreen()),
+              );
+            },
+            child: Icon(Icons.message),
+            tooltip: 'Go to Chat',
+          ),
+          drawer: Drawer(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: <Widget>[
+                const DrawerHeader(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Color(0xFFF5EFF9),
+                        Color(0x00000000),
                       ],
                     ),
                   ),
-                ),
-                const SizedBox(width: 2,),
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.all(10.0),
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.white,
-                          Colors.transparent
-                        ],
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        IconButton(
-                          color: Colors.black,
-                          icon: Icon(Icons.train),
-                          iconSize: 35.0,
-                          onPressed: () => _onIconTapped(1),
-                        ),
-                      ],
-                    ),
+                  child: Image(
+                    image: AssetImage('assets/JanBahon-removebg-preview.png'),
+                    fit: BoxFit.cover,
+                    height: 150,
+                    width: 150,
                   ),
                 ),
-                const SizedBox(width: 2,),
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.all(10.0),
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.white,
-                          Colors.transparent
-                        ],
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        IconButton(
-                    color: Colors.black,
-                          icon: Icon(Icons.airplane_ticket),
-                          iconSize: 35.0,
-                          onPressed: () => _onIconTapped(2),
-                        ),
-                      ],
-                    ),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border(bottom: BorderSide(color: Colors.grey, width: .8)),
+                  ),
+                  child: ListTile(
+                    title: Text('Map'),
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => LiveTracking()));
+                    },
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border(bottom: BorderSide(color: Colors.grey, width: .9)),
+                  ),
+                  child: ListTile(
+                    title: Text('Settings'),
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) =>  settingsScreen()));
+                    },
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border(bottom: BorderSide(color: Colors.grey, width: .8)),
+                  ),
+                  child: ListTile(
+                    title: Text('Help'),
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => HelpPage()));
+                    },
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border(bottom: BorderSide(color: Colors.grey, width: .8)),
+                  ),
+                  child: ListTile(
+                    title: Text('Contact'),
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => ContactPage()));
+                    },
+                  ),
+                ),Container(
+                  decoration: BoxDecoration(
+                    border: Border(bottom: BorderSide(color: Colors.grey, width: .8)),
+                  ),
+                  child: ListTile(
+                    title: Text('Car Hiring'),
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => HiringCars()));
+                    },
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border(bottom: BorderSide(color: Colors.grey, width: .8)),
+                  ),
+                  child: ListTile(
+                    title: Text('Log out'),
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => BottomBar()));
+                    },
                   ),
                 ),
               ],
             ),
-            Expanded(
-              child: _widgetOptions.elementAt(_selectedIndex),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        splashColor: Colors.white,
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ChatScreen()),
-          );
-        },
-        child: Icon(Icons.message),
-        tooltip: 'Go to Chat',
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Color(0xFFF5EFF9),
-                    Color(0x00000000),
-                  ],
-                ),
-              ),
-              child: Image(
-                image: AssetImage('assets/JanBahon-removebg-preview.png'),
-                fit: BoxFit.cover,
-                height: 150,
-                width: 150,
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: Colors.grey, width: .8)),
-              ),
-              child: ListTile(
-                title: Text('Map'),
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => LiveTracking()));
-                },
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: Colors.grey, width: .9)),
-              ),
-              child: ListTile(
-                title: Text('Settings'),
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) =>  settingsScreen()));
-                },
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: Colors.grey, width: .8)),
-              ),
-              child: ListTile(
-                title: Text('Help'),
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => HelpPage()));
-                },
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: Colors.grey, width: .8)),
-              ),
-              child: ListTile(
-                title: Text('Contact'),
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ContactPage()));
-                },
-              ),
-            ),Container(
-              decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: Colors.grey, width: .8)),
-              ),
-              child: ListTile(
-                title: Text('Car Hiring'),
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => HiringCars()));
-                },
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: Colors.grey, width: .8)),
-              ),
-              child: ListTile(
-                title: Text('Log out'),
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => BottomBar()));
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.indigo,
-        elevation: 10,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home,color: Colors.black),
-            label: 'Home',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.camera,color: Colors.black),
-            label: 'Map',
+          bottomNavigationBar: BottomNavigationBar(
+            backgroundColor: Colors.indigo,
+            elevation: 10,
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home,color: Colors.black),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.camera,color: Colors.black),
+                label: 'Map',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.qr_code_2,color: Colors.black),
+                label: 'QR Code',
+              ),
+            ],
+            currentIndex: selInd,
+            selectedItemColor: Colors.white,
+            selectedIconTheme: IconThemeData(color: Colors.white),
+            unselectedLabelStyle:TextStyle(fontWeight: FontWeight.bold) ,
+            selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+            onTap: (index) {
+              setState(() {
+                selInd = index;
+              });
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => _widgetOptions1[index]),
+              );
+            },
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.qr_code_2,color: Colors.black),
-            label: 'QR Code',
-          ),
-        ],
-        currentIndex: selInd,
-        selectedItemColor: Colors.white,
-        selectedIconTheme: IconThemeData(color: Colors.white),
-        unselectedLabelStyle:TextStyle(fontWeight: FontWeight.bold) ,
-        selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
-        onTap: (index) {
-          setState(() {
-            selInd = index;
-          });
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => _widgetOptions1[index]),
-          );
-        },
-      ),
-    ));
+        ));
   }
 
 }

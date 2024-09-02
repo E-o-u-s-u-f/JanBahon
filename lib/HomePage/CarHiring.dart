@@ -10,7 +10,6 @@ class HiringCars extends StatefulWidget {
 
 class _HiringCarsState extends State<HiringCars> {
   final _formKey = GlobalKey<FormState>();
-
   final _nameController = TextEditingController();
   final _nidController = TextEditingController();
   final _phoneController = TextEditingController();
