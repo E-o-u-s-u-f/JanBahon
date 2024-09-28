@@ -1,7 +1,8 @@
-# jan_bahon
+# JanBahon,UnLoack Your Ride, Anytime,Anywhere
 
 A new Flutter project.
-
+A new Transport ticketing management app which can be smoother your journey.
+ 
 ## Getting Started
 
 This project is a starting point for a Flutter application.
