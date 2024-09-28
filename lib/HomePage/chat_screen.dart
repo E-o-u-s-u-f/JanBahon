@@ -23,7 +23,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final response = await _chatGPTService.generateResponse();
 
     setState(() {
-      _messages.add({'user': 'ChatGPT', 'message': response});
+      _messages.add({'user': 'JanBahon', 'message': response});
       _isLoading = false;
     });
 

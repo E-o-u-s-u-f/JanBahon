@@ -31,7 +31,7 @@ class _QRviewAccessPageState extends State<QRviewAccessPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => QRPage(qrData: pdfUrl),
+            builder: (context) => QRPage(qrData: pdfUrl,uniqueID: searchString,),
           ),
         );
       } else {
@@ -60,6 +60,7 @@ class _QRviewAccessPageState extends State<QRviewAccessPage> {
           children: [
             TextField(
               controller: _searchController,
+              keyboardType: TextInputType.number,
               decoration: InputDecoration(labelText: 'Enter Pass Number'),
             ),
             SizedBox(height: 20),

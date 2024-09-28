@@ -25,7 +25,7 @@ Widget buildBoxB(
         return Icons.train; // Train icon
       case 2:
         description = "Airplane";
-        return Icons.airplanemode_active; // Airplane icon
+        return Icons.airplane_ticket; // Airplane icon
       default:
         description = "Bus";
         return Icons.directions_bus; // Default icon (bus)

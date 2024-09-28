@@ -603,6 +603,7 @@ class _BusSeatSelectionState extends State<BusSeatSelection> {
               ],
             ),
           ),
+          
         ),
       ),
     ];

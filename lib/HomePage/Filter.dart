@@ -28,7 +28,6 @@ class _BusOptionState extends State<BusOption> {
     'Rangpur',
     'Sylhet',
     'Barishal',
-
   ];
 
   List<Map<String, dynamic>> filteredOptions = [];
@@ -73,170 +72,115 @@ class _BusOptionState extends State<BusOption> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      //backgroundColor: Colors.transparent,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [Colors.white, Colors.indigo],
         ),
       ),
-      child:Scaffold(
-         appBar: AppBar(
-        //backgroundColor: Colors.transparent,
-        title:  Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'JanBahon',
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
-            ),
-            SizedBox(width: 10),
-            Icon(Icons.search, color: Colors.indigo),
-          ],
+      child: Scaffold(
+        appBar: AppBar(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'JanBahon',
+                style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.italic),
+              ),
+              SizedBox(width: 10),
+              Icon(Icons.search, color: Colors.indigo),
+            ],
+          ),
+          centerTitle: true,
         ),
-        centerTitle: true,
-
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-
-              SizedBox(height: 20),
-              DropdownButtonFormField<String>(
-                decoration: InputDecoration(
-                  fillColor: Colors.white54,
-                  filled: true,
-                  labelText: 'From:',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                SizedBox(height: 20),
+                DropdownButtonFormField<String>(
+                  decoration: InputDecoration(
+                    fillColor: Colors.white54,
+                    filled: true,
+                    labelText: 'From:',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
                   ),
-                ),
-                value: selectedFrom,
-                items: locations.map((String location) {
-                  return DropdownMenuItem<String>(
-                    value: location,
-                    child: Text(location),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    selectedFrom = newValue;
-                    selectedTo = null; // Reset selectedTo when selectedFrom changes
-                  });
-                },
-              ),
-              SizedBox(height: 16.0),
-              DropdownButtonFormField<String>(
-                decoration: InputDecoration(
-                  fillColor: Colors.white54,
-                  filled: true,
-                  labelText: 'To:',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(35),
-                  ),
-                ),
-                value: selectedTo,
-                items: locations.where((location) => location != selectedFrom)
-                    .map((String location) {
-                  return DropdownMenuItem<String>(
-                    value: location,
-                    child: Text(location),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    selectedTo = newValue;
-                  });
-                },
-              ),
-              SizedBox(height: 16.0),
-              TextField(
-                decoration: InputDecoration(
-                  fillColor: Colors.white54,
-                  filled: true,
-                  labelText: 'Date:',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                ),
-                readOnly: true,
-                onTap: () => _selectDate(context),
-                controller: TextEditingController(
-                  text: selectedDate == null
-                      ? ''
-                      : '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}',
-                ),
-              ),
-              SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: () async {
-                  if (selectedFrom == null || selectedTo == null || selectedDate == null) {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text('Error'),
-                          content: Text('Please select all fields'),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Text('OK'),
-                            ),
-                          ],
-                        );
-                      },
+                  value: selectedFrom,
+                  items: locations.map((String location) {
+                    return DropdownMenuItem<String>(
+                      value: location,
+                      child: Text(location),
                     );
-                    return;
-                  }
-
-                  setState(() {
-                    isLoading = true;
-                  });
-
-                  try {
-                    formattedDate = DateFormat('MM/dd/yyyy').format(selectedDate!);
-                    print('Searching from $selectedFrom to $selectedTo on $formattedDate');
-
-                    String collectionName = getCollectionName(cur);
-                    print('Selected collection: $collectionName'); // Debugging
-
-                    QuerySnapshot querySnapshot = await FirebaseFirestore
-                        .instance
-                        .collection(collectionName)
-                        .where('Date', isEqualTo: formattedDate)
-                        .where('FROM1', isEqualTo: selectedFrom)
-                        .where('TO1', isEqualTo: selectedTo)
-                        .get();
-
+                  }).toList(),
+                  onChanged: (String? newValue) {
                     setState(() {
-                      filteredOptions = querySnapshot.docs.map((doc) {
-                        return {
-                          "FROM": doc['FROM'],
-                          "FROM1": doc['FROM1'],
-                          "TO": doc['TO'],
-                          "TO1": doc['TO1'],
-                          "Date": doc['Date'],
-                          "time": doc['time'],
-                          "no": doc['no'],
-                          "Fair": doc['Fair'],
-                        };
-                      }).toList();
-
-                      noBusFound = filteredOptions.isEmpty;
+                      selectedFrom = newValue;
+                      selectedTo = null; // Reset selectedTo when selectedFrom changes
                     });
-
-                    if (noBusFound) {
+                  },
+                ),
+                SizedBox(height: 16.0),
+                DropdownButtonFormField<String>(
+                  decoration: InputDecoration(
+                    fillColor: Colors.white54,
+                    filled: true,
+                    labelText: 'To:',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(35),
+                    ),
+                  ),
+                  value: selectedTo,
+                  items: locations
+                      .where((location) => location != selectedFrom)
+                      .map((String location) {
+                    return DropdownMenuItem<String>(
+                      value: location,
+                      child: Text(location),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedTo = newValue;
+                    });
+                  },
+                ),
+                SizedBox(height: 16.0),
+                TextField(
+                  decoration: InputDecoration(
+                    fillColor: Colors.white54,
+                    filled: true,
+                    labelText: 'Date:',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  readOnly: true,
+                  onTap: () => _selectDate(context),
+                  controller: TextEditingController(
+                    text: selectedDate == null
+                        ? ''
+                        : '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}', // Corrected date format
+                  ),
+                ),
+                SizedBox(height: 16.0),
+                ElevatedButton(
+                  onPressed: () async {
+                    if (selectedFrom == null ||
+                        selectedTo == null ||
+                        selectedDate == null) {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: Text('Sorry'),
-                            content: Text('No vehicle found for the selected criteria.'),
+                            title: Text('Error'),
+                            content: Text('Please select all fields'),
                             actions: [
                               TextButton(
                                 onPressed: () {
@@ -248,45 +192,106 @@ class _BusOptionState extends State<BusOption> {
                           );
                         },
                       );
+                      return;
                     }
 
-                    print('Filtered Options: $filteredOptions');
-                  } catch (e) {
-                    print('Error fetching data: $e');
-                  } finally {
                     setState(() {
-                      isLoading = false;
+                      isLoading = true;
                     });
-                  }
-                },
-                child: isLoading
-                    ? CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                )
-                    : Text('Search'),
-              ),
-              SizedBox(height: 16.0),
-              Column(
-                children: filteredOptions.map((option) {
-                  return buildBoxB(
-                    context,
-                    option["FROM"]!,
-                    option["FROM1"]!,
-                    option["TO"]!,
-                    option["TO1"]!,
-                    option["Date"]!,
-                    option["time"]!,
-                    option["no"]!,
-                    cur,
-                    option["Fair"],
-                  );
-                }).toList(),
-              ),
-            ],
+
+                    try {
+                      formattedDate =
+                          DateFormat('dd/MM/yyyy').format(selectedDate!);
+                      print(
+                          'Searching from $selectedFrom to $selectedTo on $formattedDate');
+
+                      String collectionName = getCollectionName(cur);
+                      print('Selected collection: $collectionName'); // Debugging
+
+                      QuerySnapshot querySnapshot = await FirebaseFirestore
+                          .instance
+                          .collection(collectionName)
+                          .where('Date', isEqualTo: formattedDate)
+                          .where('FROM1', isEqualTo: selectedFrom)
+                          .where('TO1', isEqualTo: selectedTo)
+                          .get();
+
+                      setState(() {
+                        filteredOptions = querySnapshot.docs.map((doc) {
+                          return {
+                            "FROM": doc['FROM'],
+                            "FROM1": doc['FROM1'],
+                            "TO": doc['TO'],
+                            "TO1": doc['TO1'],
+                            "Date": doc['Date'],
+                            "time": doc['time'],
+                            "no": doc['no'],
+                            "Fair": doc['Fair'],
+                          };
+                        }).toList();
+
+                        noBusFound = filteredOptions.isEmpty;
+                      });
+
+                      if (noBusFound) {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Sorry'),
+                              content: Text(
+                                  'No vehicle found for the selected criteria.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('OK'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+
+                      print('Filtered Options: $filteredOptions');
+                    } catch (e) {
+                      print('Error fetching data: $e');
+                    } finally {
+                      setState(() {
+                        isLoading = false;
+                      });
+                    }
+                  },
+                  child: isLoading
+                      ? CircularProgressIndicator(
+                    valueColor:
+                    AlwaysStoppedAnimation<Color>(Colors.white),
+                  )
+                      : Text('Search'),
+                ),
+                SizedBox(height: 16.0),
+                Column(
+                  children: filteredOptions.map((option) {
+                    return buildBoxB(
+                      context,
+                      option["FROM"]!,
+                      option["FROM1"]!,
+                      option["TO"]!,
+                      option["TO1"]!,
+                      option["Date"]!,
+                      option["time"]!,
+                      option["no"]!,
+                      cur,
+                      option["Fair"],
+                    );
+                  }).toList(),
+                ),
+              ],
+            ),
           ),
         ),
       ),
-      )
     );
   }
 }

@@ -57,6 +57,7 @@ class _PDFPageState extends State<PDFPage> {
 
     pdf.addPage(
       pw.Page(
+        //margin: pw.EdgeInsets.all(20.0),
         build: (pw.Context context) => pw.Center(
           child: pw.Column(
             mainAxisAlignment: pw.MainAxisAlignment.center,
@@ -190,7 +191,7 @@ class _PDFPageState extends State<PDFPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => QRPage(qrData: _pdfUrl!),
+          builder: (context) => QRPage(qrData: _pdfUrl!,uniqueID:uniqueId,),
         ),
       );
     } catch (e) {
@@ -258,8 +259,6 @@ class _PDFPageState extends State<PDFPage> {
                 color: Colors.indigo,
               ),
             ),
-
-
           ],
         ),
       ),
