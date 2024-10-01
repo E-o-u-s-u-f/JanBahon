@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="gcm_defaultSenderId" translatable="false">34833464571</string>
+    <string name="google_api_key" translatable="false">AIzaSyA5wYpHnwOIg0JPE23aUhrdAnZmj8tORnM</string>
+    <string name="google_app_id" translatable="false">1:34833464571:android:3ccedff3800a534cc0445e</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyA5wYpHnwOIg0JPE23aUhrdAnZmj8tORnM</string>
+    <string name="google_storage_bucket" translatable="false">janbahon-4e06f.appspot.com</string>
+    <string name="project_id" translatable="false">janbahon-4e06f</string>
+</resources>
