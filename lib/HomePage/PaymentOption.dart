@@ -177,12 +177,10 @@ class _PaymentState extends State<Payment> {
       ),
     );
   }
-
-  @override
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -201,7 +199,7 @@ class _PaymentState extends State<Payment> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               SizedBox(height: 20.0),
-              Center(
+              const Center(
                 child: Text(
                   'Enter Your Payment Details',
                   style: TextStyle(
@@ -214,30 +212,30 @@ class _PaymentState extends State<Payment> {
               SizedBox(height: 40.0),
               Text(
                 'Total Payment: \$${widget.totalPayment.toStringAsFixed(2)}',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 40.0),
+              const SizedBox(height: 40.0),
               _buildPaymentMethodOption('Credit Card'),
               _buildPaymentMethodOption('Google Pay'),
               _buildPaymentMethodOption('PayPal'),
               SizedBox(height: 16.0),
               if (_selectedPaymentMethod == 'Credit Card') _buildCreditCardForm(),
               if (_selectedPaymentMethod == 'Google Pay')
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
                   child: Text(
                     'Redirecting to Google Pay...',
                     style: TextStyle(fontSize: 16.0, color: Colors.grey),
                   ),
                 ),
               if (_selectedPaymentMethod == 'PayPal')
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
                   child: Text(
                     'Redirecting to PayPal...',
                     style: TextStyle(fontSize: 16.0, color: Colors.grey),
@@ -250,7 +248,7 @@ class _PaymentState extends State<Payment> {
                   color: Colors.indigo,
                 ),
                 text: 'Swipe to Pay',
-                textStyle: TextStyle(
+                textStyle: const TextStyle(
                   fontSize: 18.0,
                   color: Colors.black,
                   fontWeight: FontWeight.bold,

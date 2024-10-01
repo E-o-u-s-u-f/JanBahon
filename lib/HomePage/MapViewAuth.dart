@@ -59,6 +59,7 @@ class _MapviewAccessPageState extends State<MapviewAccessPage> {
           children: [
             TextField(
               controller: _searchController,
+              keyboardType: TextInputType.number,
               decoration: InputDecoration(labelText: 'Enter Pass Number'),
             ),
             SizedBox(height: 20),
@@ -66,7 +67,7 @@ class _MapviewAccessPageState extends State<MapviewAccessPage> {
               onPressed: _searchDocument,
               child: Text('Search'),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
             if (_errorMessage != null)
               Text(
                 _errorMessage!,
